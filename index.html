@@ -824,10 +824,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
         <table class="admin-table">
           <thead><tr><th>User ID</th><th>Username</th><th>Email</th><th>Role</th><th>Balance</th><th>Total Earned</th><th>Joined</th></tr></thead>
           <tbody id="adminUsersTable">
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#001</td><td>DemoUser</td><td>user@demo.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$3.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$3.00</td><td style="color:var(--muted);font-size:0.75rem;">Today</td></tr>
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#002</td><td>Wei_L</td><td>wei@example.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--muted);font-size:0.75rem;">Today</td></tr>
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#003</td><td>Amir_S</td><td>amir@example.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--muted);font-size:0.75rem;">Yesterday</td></tr>
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#ADM</td><td>Admin</td><td>admin@earnova.com</td><td><span class="status-badge status-rejected">admin</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">—</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">—</td><td style="color:var(--muted);font-size:0.75rem;">Platform owner</td></tr>
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Loading users...</td></tr>
           </tbody>
         </table>
       </div>
@@ -840,20 +837,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
         <table class="admin-table">
           <thead><tr><th>Request ID</th><th>User</th><th>Amount</th><th>Network</th><th>Wallet Address</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="adminWithdrawTable">
-            <tr>
-              <td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#WD001</td>
-              <td>DemoUser</td>
-              <td style="font-family:'Space Mono',monospace;color:var(--accent);">$10.00</td>
-              <td><span class="badge badge-green">TRC20</span></td>
-              <td style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);">TXxample...abc</td>
-              <td style="color:var(--muted);font-size:0.75rem;">Today</td>
-              <td><span class="status-badge status-pending" id="wdStatus-WD001">PENDING</span></td>
-              <td>
-                <button class="btn-approve" onclick="adminAction('WD001','approve')">✓ Approve</button>
-                <button class="btn-reject" onclick="adminAction('WD001','reject')">✕ Reject</button>
-                <button class="btn-paid" onclick="adminAction('WD001','paid')">✔ Mark Paid</button>
-              </td>
-            </tr>
+            <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px;">Loading withdrawals...</td></tr>
           </tbody>
         </table>
       </div>
@@ -867,7 +851,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
         <table class="admin-table">
           <thead><tr><th>Record ID</th><th>User</th><th>Score (blocks)</th><th>Points Earned</th><th>Mode</th><th>Timestamp</th></tr></thead>
           <tbody id="adminGameTable">
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#GR001</td><td>DemoUser</td><td style="color:var(--accent2);">240</td><td style="color:var(--accent);font-family:'Space Mono',monospace;">2,400 pts</td><td><span class="badge badge-yellow">FREE</span></td><td style="color:var(--muted);font-size:0.75rem;">Today, 2:10 PM</td></tr>
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Loading game records...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1116,7 +1100,7 @@ if (user.role === 'admin') {
   document.getElementById('umName').textContent = user.username || 'User';
   document.getElementById('umEmail').textContent = email;
   const refName = (user.username || 'USER').toUpperCase().replace(/\s/g,'');
-  document.getElementById('refLink').value = 'earnovagaming.netlify.app/join?ref=' + refName;
+  document.getElementById('refLink').value = 'earnovagaming.github.io/Earnovagaming?ref=' + refName;
   if (user.role === 'admin') {
     document.getElementById('navAdminBtn').style.display = 'block';
   }
@@ -1178,13 +1162,57 @@ async function loadAdminData() {
     wSnap.forEach(d => allW.push({ id: d.id, ...d.data() }));
     renderAdminWithdrawals(allW);
 
-    // Load users count
+    // Load real users from Firestore
     const uSnap = await db.collection('users').get();
     let proCount = 0;
-    uSnap.forEach(d => { if (d.data().isPro) proCount++; });
+    const userRows = [];
+    uSnap.forEach((d, i) => {
+      const u = d.data();
+      if (u.isPro) proCount++;
+      const ptsCash = u.isPro ? (u.totalPts||0)*0.000002 : (u.totalPts||0)*0.000001;
+      const bal = ptsCash + (u.referralCash||0) + (u.milestoneCash||0);
+      const joined = u.createdAt ? new Date(u.createdAt.toDate()).toLocaleDateString() : 'N/A';
+      userRows.push(`
+        <tr>
+          <td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">${d.id.substring(0,8)}...</td>
+          <td>${u.username || 'N/A'}</td>
+          <td style="font-size:0.75rem;color:var(--muted);">${u.email || 'N/A'}</td>
+          <td><span class="status-badge status-approved">${u.role || 'user'}</span></td>
+          <td style="color:var(--accent);font-family:'Space Mono',monospace;">$${bal.toFixed(2)}</td>
+          <td style="color:var(--accent2);font-family:'Space Mono',monospace;">${(u.totalPts||0).toLocaleString()} pts</td>
+          <td style="color:var(--muted);font-size:0.75rem;">${joined}</td>
+        </tr>
+      `);
+    });
+    document.getElementById('adminUsersTable').innerHTML = userRows.length
+      ? userRows.join('')
+      : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No users yet.</td></tr>';
+
     document.getElementById('adminTotalUsers').textContent = uSnap.size;
     document.getElementById('adminProUsers').textContent = proCount;
     document.getElementById('adminPendingWithdraw').textContent = allW.filter(w => w.status === 'pending').length;
+
+    // Load game records
+    const gSnap = await db.collection('game_records').orderBy('createdAt', 'desc').limit(50).get();
+    const gameRows = [];
+    gSnap.forEach((d, i) => {
+      const g = d.data();
+      const ts = g.createdAt ? new Date(g.createdAt.toDate()).toLocaleString() : 'N/A';
+      gameRows.push(`
+        <tr>
+          <td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#GR${String(i+1).padStart(3,'0')}</td>
+          <td>${g.username || 'User'}</td>
+          <td style="color:var(--accent2);">${g.score || 0}</td>
+          <td style="color:var(--accent);font-family:'Space Mono',monospace;">${(g.sessionPts||0).toLocaleString()} pts</td>
+          <td><span class="badge ${g.isPro ? 'badge-purple' : 'badge-yellow'}">${g.isPro ? 'PRO' : 'FREE'}</span></td>
+          <td style="color:var(--muted);font-size:0.75rem;">${ts}</td>
+        </tr>
+      `);
+    });
+    document.getElementById('adminGameTable').innerHTML = gameRows.length
+      ? gameRows.join('')
+      : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No game records yet.</td></tr>';
+
   } catch(e) { console.error('Admin load error:', e); }
 }
 
@@ -1200,7 +1228,7 @@ function renderAdminWithdrawals(list) {
       <td>${w.username || 'User'}</td>
       <td style="font-family:'Space Mono',monospace;color:var(--accent);">$${w.amount}</td>
       <td><span class="badge badge-green">${w.network}</span></td>
-      <td style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);">${(w.addr||'').substring(0,12)}...</td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);word-break:break-all;">${w.addr || 'N/A'}</td>
       <td style="color:var(--muted);font-size:0.75rem;">${w.date || ''}</td>
       <td><span class="status-badge status-${w.status}" id="wdStatus-${w.id}">${(w.status||'pending').toUpperCase()}</span></td>
       <td>
