@@ -1073,7 +1073,7 @@ async function doRegister() {
       username, email, role: 'user',
       balance: 0, total_earned: 0,
       isPro: false, proExpiry: null,
-      referredBy: refCode || null,
+      referredBy: refCode ? refCode.replace('EARNOVA_','').replace(/_/g,' ') : null,
       referralCredited: false,
       totalPts: 0, referralCash: 0, milestoneCash: 0,
       referralCount: 0,
@@ -1113,8 +1113,8 @@ if (user.role === 'admin') {
   document.getElementById('navUsername').textContent = user.username || 'User';
   document.getElementById('umName').textContent = user.username || 'User';
   document.getElementById('umEmail').textContent = email;
-  const refName = (user.username || 'USER').toUpperCase().replace(/\s/g,'');
-  document.getElementById('refLink').value = 'earnovagaming.github.io/Earnovagaming?ref=' + refName;
+  const refName = (user.username || 'USER').replace(/\s/g,'');
+  document.getElementById('refLink').value = 'https://earnovagaming.github.io/Earnovagaming?ref=' + refName;
   if (user.role === 'admin') {
     document.getElementById('navAdminBtn').style.display = 'block';
   }
@@ -1322,9 +1322,14 @@ window.copyRef = copyRef;
 async function loadReferrals() {
   if (!currentUser || !currentUser.username) return;
   try {
-    const snap = await db.collection('users').where('referredBy', '==', currentUser.username).get();
+    const allSnap = await db.collection('users').get();
     const refs = [];
-    snap.forEach(d => refs.push(d.data()));
+    allSnap.forEach(d => {
+      const u = d.data();
+      if (u.referredBy && u.referredBy.toLowerCase() === currentUser.username.toLowerCase()) {
+        refs.push(u);
+      }
+    });
 
     // Update referral count
     document.getElementById('refTableCount').textContent = refs.length;
@@ -1392,10 +1397,17 @@ async function activatePro() {
       const userSnap = await db.collection('users').doc(currentUser.uid).get();
       const userData = userSnap.data();
       if (userData && userData.referredBy && !userData.referralCredited) {
-        // Find referrer by username
-        const refSnap = await db.collection('users').where('username', '==', userData.referredBy).get();
-        if (!refSnap.empty) {
-          const referrerDoc = refSnap.docs[0];
+        // Find referrer by username - case insensitive
+        const allUsersSnap = await db.collection('users').get();
+        let referrerDoc = null;
+        allUsersSnap.forEach(d => {
+          const u = d.data();
+          if (u.username && u.username.toLowerCase() === userData.referredBy.toLowerCase()) {
+            referrerDoc = d;
+          }
+        });
+
+        if (referrerDoc) {
           const referrerData = referrerDoc.data();
           const newRefCash = (referrerData.referralCash || 0) + 1.00;
           const newRefCount = (referrerData.referralCount || 0) + 1;
