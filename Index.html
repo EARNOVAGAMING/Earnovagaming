@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earnova - Play Games & Earn Crypto Rewards Online</title>
+<meta name="description" content="Earnova is a reward-based gaming platform where users can play games, earn rewards, and participate in referral programs. Play block games to earn real crypto rewards.">
+<meta name="keywords" content="earn rewards, play to earn, gaming platform, crypto rewards, referral system, Earnova, blockchain gaming, earn crypto, play and earn, online rewards">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Earnova Platform">
+<meta name="theme-color" content="#0a0a0f">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Earnova - Play Games & Earn Crypto Rewards">
+<meta property="og:description" content="Play block games, earn points, refer friends and withdraw real crypto rewards. Join Earnova today — it's free!">
+<meta property="og:url" content="https://earnova.app">
+<meta property="og:image" content="https://earnova.app/og-image.png">
+<meta property="og:site_name" content="Earnova">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Earnova - Play Games & Earn Crypto">
+<meta name="twitter:description" content="Earn real crypto by playing games and referring friends. Free to join. Withdraw via ETH, BNB or TRX.">
+<meta name="twitter:image" content="https://earnova.app/og-image.png">
+<!-- Canonical -->
+<link rel="canonical" href="https://earnova.app">
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Earnova",
+  "url": "https://earnova.app",
+  "description": "Reward-based gaming platform where users earn crypto by playing games and referring friends.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free to join. PRO plan $5/week."
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+:root {
+  --bg:#0a0a0f; --surface:#12121a; --card:#1a1a26; --border:#2a2a40;
+  --accent:#f0c040; --accent2:#40e0a0; --accent3:#e040a0;
+  --text:#f0f0ff; --muted:#7070a0; --danger:#ff4060; --pro:#a060ff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Bai Jamjuree',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(240,192,64,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(240,192,64,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* ===== AUTH SCREEN ===== */
+#authScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;}
+#authScreen::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(240,192,64,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(240,192,64,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.auth-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 28px;max-width:400px;width:100%;position:relative;z-index:1;}
+.auth-logo{font-size:1.8rem;font-weight:700;letter-spacing:-1px;text-align:center;margin-bottom:4px;}
+.auth-logo span{color:var(--accent);}
+.auth-tagline{text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:24px;}
+.auth-tabs{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px;}
+.auth-tab{flex:1;padding:9px;text-align:center;font-size:0.8rem;font-weight:700;cursor:pointer;color:var(--muted);transition:all 0.2s;}
+.auth-tab.active{background:var(--accent);color:#0a0a0f;}
+.form-group{margin-bottom:14px;}
+.form-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;display:block;}
+.form-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:'Bai Jamjuree',sans-serif;font-size:0.88rem;transition:border-color 0.2s;}
+.form-input:focus{outline:none;border-color:var(--accent);}
+.form-input::placeholder{color:var(--muted);}
+.btn-auth{width:100%;padding:13px;border-radius:10px;border:none;font-family:'Bai Jamjuree',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;background:var(--accent);color:#0a0a0f;transition:all 0.2s;margin-top:4px;}
+.btn-auth:hover{background:#ffd060;transform:translateY(-1px);}
+.auth-err{background:rgba(255,64,96,0.1);border:1px solid rgba(255,64,96,0.3);border-radius:8px;padding:10px 13px;font-size:0.78rem;color:var(--danger);margin-bottom:12px;display:none;}
+.auth-disclaimer{font-size:0.68rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;}
+.auth-disclaimer a{color:var(--accent);text-decoration:none;}
+
+/* ===== NAV ===== */
+nav{position:sticky;top:0;background:rgba(10,10,15,0.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;gap:8px;}
+.logo{font-size:1.2rem;font-weight:700;letter-spacing:-0.5px;flex-shrink:0;cursor:pointer;}
+.logo span{color:var(--accent);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-pill{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'Space Mono',monospace;font-size:0.76rem;color:var(--accent);display:flex;align-items:center;gap:5px;}
+.pro-badge-btn{background:linear-gradient(135deg,var(--pro),#6030cc);color:#fff;border-radius:6px;padding:6px 11px;font-size:0.7rem;font-weight:700;letter-spacing:1px;cursor:pointer;border:none;font-family:'Bai Jamjuree',sans-serif;}
+.nav-user{font-size:0.72rem;color:var(--muted);cursor:pointer;padding:6px 10px;border-radius:6px;border:1px solid var(--border);transition:all 0.2s;}
+.nav-user:hover{border-color:var(--accent);color:var(--accent);}
+.nav-admin-btn{background:rgba(255,64,96,0.15);border:1px solid var(--danger);color:var(--danger);border-radius:6px;padding:6px 11px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Bai Jamjuree',sans-serif;display:none;}
+
+/* ===== MAIN APP ===== */
+#mainApp{display:none;}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);position:relative;z-index:1;overflow-x:auto;}
+.tab{padding:12px 16px;cursor:pointer;font-weight:600;font-size:0.75rem;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.2s;letter-spacing:0.5px;text-transform:uppercase;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text);}
+.panel{display:none;padding:18px;position:relative;z-index:1;max-width:900px;margin:0 auto;}
+.panel.active{display:block;}
+
+/* ===== ADMIN PANEL ===== */
+#adminPanel{display:none;position:fixed;inset:0;background:var(--bg);z-index:8000;overflow-y:auto;}
+#adminPanel::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,64,96,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,64,96,0.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.admin-nav{background:rgba(10,10,15,0.97);border-bottom:1px solid rgba(255,64,96,0.3);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.admin-logo{font-size:1.1rem;font-weight:700;color:var(--danger);}
+.admin-logo span{color:var(--text);}
+.admin-content{padding:24px;max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
+.admin-stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.admin-stat.red{border-color:rgba(255,64,96,0.3);}
+.admin-stat-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
+.admin-stat-val{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;}
+.admin-stat-val.danger{color:var(--danger);}
+.admin-stat-val.gold{color:var(--accent);}
+.admin-stat-val.green{color:var(--accent2);}
+.admin-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px;}
+.admin-section-title{font-size:0.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.admin-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.admin-table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+.admin-table th{text-align:left;padding:10px 12px;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);}
+.admin-table td{padding:11px 12px;border-bottom:1px solid rgba(42,42,64,0.5);vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.status-badge{padding:3px 9px;border-radius:4px;font-size:0.65rem;font-weight:700;text-transform:uppercase;}
+.status-pending{background:rgba(240,192,64,0.13);color:var(--accent);}
+.status-approved{background:rgba(64,224,160,0.13);color:var(--accent2);}
+.status-paid{background:rgba(160,96,255,0.13);color:var(--pro);}
+.status-rejected{background:rgba(255,64,96,0.13);color:var(--danger);}
+.btn-approve{padding:5px 12px;border-radius:5px;border:none;background:rgba(64,224,160,0.15);color:var(--accent2);font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Bai Jamjuree',sans-serif;margin-right:4px;transition:all 0.2s;}
+.btn-approve:hover{background:rgba(64,224,160,0.3);}
+.btn-reject{padding:5px 12px;border-radius:5px;border:none;background:rgba(255,64,96,0.12);color:var(--danger);font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Bai Jamjuree',sans-serif;transition:all 0.2s;}
+.btn-reject:hover{background:rgba(255,64,96,0.25);}
+.btn-paid{padding:5px 12px;border-radius:5px;border:none;background:rgba(160,96,255,0.15);color:var(--pro);font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Bai Jamjuree',sans-serif;transition:all 0.2s;}
+.btn-paid:hover{background:rgba(160,96,255,0.3);}
+.admin-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.admin-tab-btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:0.76rem;font-weight:700;cursor:pointer;font-family:'Bai Jamjuree',sans-serif;transition:all 0.2s;}
+.admin-tab-btn.active{background:var(--danger);border-color:var(--danger);color:#fff;}
+
+/* ===== WALLET ===== */
+.wallet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:11px;margin-bottom:20px;}
+.wallet-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px;position:relative;overflow:hidden;}
+.wallet-card::before{content:'';position:absolute;top:-26px;right:-26px;width:70px;height:70px;border-radius:50%;opacity:0.09;}
+.wallet-card.gold::before{background:var(--accent);}.wallet-card.green::before{background:var(--accent2);}.wallet-card.pink::before{background:var(--accent3);}.wallet-card.red::before{background:var(--danger);}.wallet-card.purple::before{background:var(--pro);}
+.wc-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px;}
+.wc-value{font-family:'Space Mono',monospace;font-size:1.25rem;font-weight:700;line-height:1;}
+.wc-value.gold{color:var(--accent);}.wc-value.green{color:var(--accent2);}.wc-value.pink{color:var(--accent3);}.wc-value.red{color:var(--danger);}.wc-value.purple{color:var(--pro);}
+.wc-sub{font-size:0.67rem;color:var(--muted);margin-top:5px;}
+
+/* ===== WITHDRAWAL FORM ===== */
+.withdraw-form{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px;}
+.withdraw-form-title{font-weight:700;font-size:1rem;margin-bottom:4px;}
+.withdraw-form-sub{font-size:0.78rem;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+.form-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:'Bai Jamjuree',sans-serif;font-size:0.88rem;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237070a0' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.form-select:focus{outline:none;border-color:var(--accent);}
+.withdraw-history{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.withdraw-history-header{padding:14px 18px;border-bottom:1px solid var(--border);font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+.withdraw-item{padding:14px 18px;border-bottom:1px solid rgba(42,42,64,0.5);display:flex;align-items:center;justify-content:space-between;}
+.withdraw-item:last-child{border-bottom:none;}
+.withdraw-item-left{display:flex;flex-direction:column;gap:3px;}
+.withdraw-item-addr{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);}
+.withdraw-item-net{font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+.withdraw-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.withdraw-item-amount{font-family:'Space Mono',monospace;font-size:0.9rem;font-weight:700;color:var(--accent);}
+.network-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:18px;}
+.network-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 14px;}
+.network-name{font-weight:700;font-size:0.82rem;margin-bottom:3px;}
+.network-desc{font-size:0.68rem;color:var(--muted);}
+.network-time{font-size:0.65rem;color:var(--accent2);margin-top:4px;}
+
+/* ===== GAME ===== */
+.section-title{font-size:0.62rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:11px;display:flex;align-items:center;gap:9px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.btn{padding:10px 20px;border-radius:8px;border:none;font-family:'Bai Jamjuree',sans-serif;font-weight:700;font-size:0.84rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.4px;}
+.btn-primary{background:var(--accent);color:#0a0a0f;}.btn-primary:hover{background:#ffd060;transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-pro{background:linear-gradient(135deg,var(--pro),#6030cc);color:#fff;}.btn-pro:hover{opacity:0.88;transform:translateY(-1px);}
+.btn-sm{padding:6px 13px;font-size:0.74rem;}
+.btn-danger{background:var(--danger);color:#fff;}.btn-danger:hover{opacity:0.88;}
+.game-layout{display:grid;grid-template-columns:1fr 240px;gap:13px;align-items:start;}
+@media(max-width:660px){.game-layout{grid-template-columns:1fr;}}
+.game-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:9px;}
+canvas{border-radius:8px;border:1px solid var(--border);background:#0d0d18;display:block;max-width:100%;}
+.canvas-wrap{position:relative;}
+.game-overlay{position:absolute;inset:0;background:rgba(10,10,15,0.9);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;backdrop-filter:blur(4px);}
+.game-overlay-title{font-size:1.35rem;font-weight:700;}
+.game-overlay-sub{color:var(--muted);font-size:0.78rem;text-align:center;padding:0 12px;line-height:1.5;}
+.game-controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.game-sidebar{display:flex;flex-direction:column;gap:10px;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.stat-row:last-child{border-bottom:none;}
+.stat-key{font-size:0.73rem;color:var(--muted);}
+.stat-val{font-family:'Space Mono',monospace;font-size:0.79rem;font-weight:700;color:var(--accent);}
+.pro-active-banner{background:linear-gradient(135deg,rgba(160,96,255,0.15),rgba(96,48,204,0.08));border:1px solid var(--pro);border-radius:9px;padding:10px 13px;display:none;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.pro-tag{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,var(--pro),#6030cc);color:#fff;border-radius:4px;padding:2px 7px;font-size:0.63rem;font-weight:700;letter-spacing:1px;}
+.level-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.63rem;font-weight:700;background:rgba(240,192,64,0.1);color:var(--accent);border:1px solid rgba(240,192,64,0.22);margin-bottom:4px;}
+.mult-label{font-size:0.64rem;color:var(--muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.mult-bar{height:5px;border-radius:3px;background:var(--border);overflow:hidden;}
+.mult-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width 0.35s;}
+.rate-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.rate-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.rate-box.pro-box{border-color:var(--pro);background:rgba(160,96,255,0.06);}
+.rate-mode{font-size:0.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px;}
+.rate-val{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:700;}
+.rate-val.gold{color:var(--accent);}.rate-val.purple{color:var(--pro);}
+.rate-desc{font-size:0.68rem;color:var(--muted);margin-top:4px;}
+.tx-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.tx-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;}
+.tx-left{display:flex;align-items:center;gap:8px;}
+.tx-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.tx-icon.earn{background:rgba(64,224,160,0.13);}.tx-icon.spend{background:rgba(240,64,96,0.13);}.tx-icon.refer{background:rgba(240,192,64,0.13);}.tx-icon.mile{background:rgba(160,96,255,0.13);}
+.tx-name{font-size:0.78rem;font-weight:600;}.tx-time{font-size:0.64rem;color:var(--muted);margin-top:1px;}
+.tx-amount{font-family:'Space Mono',monospace;font-size:0.8rem;font-weight:700;}
+.tx-amount.pos{color:var(--accent2);}.tx-amount.neg{color:var(--danger);}.tx-amount.ref{color:var(--accent);}.tx-amount.mil{color:var(--pro);}
+
+/* ===== REFERRAL ===== */
+.ref-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:14px;}
+.ref-link-row{display:flex;gap:7px;margin-top:8px;}
+.ref-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Space Mono',monospace;font-size:0.76rem;}
+.ref-input:focus{outline:none;border-color:var(--accent);}
+.mile-track{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+.mile-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:14px;}
+.mile-item.mega{border-color:var(--pro);background:rgba(160,96,255,0.05);}
+.mile-icon{font-size:1.3rem;flex-shrink:0;}
+.mile-info{flex:1;}
+.mile-title{font-weight:700;font-size:0.86rem;margin-bottom:2px;}
+.mile-desc{font-size:0.72rem;color:var(--muted);}
+.progress-bar{height:4px;border-radius:2px;background:var(--border);overflow:hidden;margin-top:5px;}
+.progress-fill{height:100%;border-radius:2px;background:var(--accent2);transition:width 0.5s;}
+.mile-reward{font-family:'Space Mono',monospace;font-weight:700;font-size:1rem;color:var(--accent);white-space:nowrap;}
+.mile-item.mega .mile-reward{color:var(--pro);}
+.sim-box{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:16px;margin-bottom:16px;}
+.sim-title{font-weight:700;font-size:0.93rem;color:var(--accent);margin-bottom:13px;}
+.sim-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.sim-row:last-child{border-bottom:none;font-weight:700;}
+.sim-key{font-size:0.79rem;color:var(--muted);}
+.sim-val{font-family:'Space Mono',monospace;font-size:0.86rem;}
+.sim-val.pos{color:var(--accent2);}.sim-val.mile{color:var(--pro);}.sim-val.net{color:var(--accent);font-size:1rem;}
+input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
+.ref-table{width:100%;border-collapse:collapse;font-size:0.79rem;}
+.ref-table th{text-align:left;padding:9px 11px;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);}
+.ref-table td{padding:10px 11px;border-bottom:1px solid rgba(42,42,64,0.5);}
+.badge{padding:2px 7px;border-radius:4px;font-size:0.66rem;font-weight:700;text-transform:uppercase;}
+.badge-green{background:rgba(64,224,160,0.13);color:var(--accent2);}.badge-yellow{background:rgba(240,192,64,0.13);color:var(--accent);}.badge-purple{background:rgba(160,96,255,0.13);color:var(--pro);}
+
+/* ===== HOW / INFO ===== */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin-bottom:22px;}
+.how-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.how-num{font-family:'Space Mono',monospace;font-size:1.7rem;font-weight:700;color:var(--border);line-height:1;margin-bottom:10px;}
+.how-title{font-weight:700;margin-bottom:5px;}
+.how-desc{font-size:0.79rem;color:var(--muted);line-height:1.6;}
+
+/* ===== FAQ ===== */
+.faq-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.faq-q{padding:13px 16px;font-weight:600;font-size:0.84rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.faq-q:hover{color:var(--accent);}
+.faq-arrow{color:var(--muted);font-size:0.75rem;transition:transform 0.2s;flex-shrink:0;margin-left:8px;}
+.faq-a{padding:0 16px;font-size:0.79rem;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height 0.3s,padding 0.2s;}
+.faq-item.open .faq-a{max-height:300px;padding:0 16px 14px;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);}
+.faq-section-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin:20px 0 10px;}
+
+/* ===== ABOUT / CONTACT / POLICY ===== */
+.page-hero{background:linear-gradient(135deg,rgba(240,192,64,0.08),rgba(160,96,255,0.05));border:1px solid var(--border);border-radius:16px;padding:28px 24px;margin-bottom:22px;text-align:center;}
+.page-hero-title{font-size:1.6rem;font-weight:700;margin-bottom:8px;}
+.page-hero-title span{color:var(--accent);}
+.page-hero-sub{font-size:0.85rem;color:var(--muted);line-height:1.7;max-width:500px;margin:0 auto;}
+.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-bottom:22px;}
+.about-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.about-card-icon{font-size:1.6rem;margin-bottom:10px;}
+.about-card-title{font-weight:700;font-size:0.9rem;margin-bottom:6px;}
+.about-card-desc{font-size:0.78rem;color:var(--muted);line-height:1.7;}
+.token-banner{background:linear-gradient(135deg,rgba(160,96,255,0.12),rgba(64,224,160,0.06));border:1px solid var(--pro);border-radius:14px;padding:22px;margin-bottom:20px;text-align:center;}
+.token-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--pro);margin-bottom:8px;}
+.token-title{font-size:1.2rem;font-weight:700;margin-bottom:6px;}
+.token-desc{font-size:0.79rem;color:var(--muted);line-height:1.6;}
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:14px;}
+.contact-method{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.contact-method:last-child{border-bottom:none;}
+.contact-icon{width:42px;height:42px;border-radius:10px;background:rgba(240,192,64,0.1);border:1px solid rgba(240,192,64,0.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.contact-info-title{font-weight:700;font-size:0.86rem;margin-bottom:2px;}
+.contact-info-val{font-size:0.76rem;color:var(--muted);}
+.policy-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;}
+.policy-section-title{font-weight:700;font-size:0.9rem;margin-bottom:10px;color:var(--accent);}
+.policy-text{font-size:0.79rem;color:var(--muted);line-height:1.8;}
+.policy-list{font-size:0.79rem;color:var(--muted);line-height:1.8;padding-left:16px;}
+.policy-list li{margin-bottom:6px;}
+.disclaimer-box{background:rgba(255,64,96,0.05);border:1px solid rgba(255,64,96,0.25);border-radius:12px;padding:20px;margin-bottom:14px;}
+.disclaimer-title{font-weight:700;font-size:0.9rem;color:var(--danger);margin-bottom:10px;}
+
+/* ===== MODAL ===== */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-backdrop.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:420px;width:100%;position:relative;}
+.modal-title{font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.modal-sub{font-size:0.8rem;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;}
+.modal-close:hover{color:var(--text);}
+.pro-features{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.pro-feat{display:flex;align-items:center;gap:9px;font-size:0.8rem;}
+.pro-feat::before{content:'✦';color:var(--pro);font-size:0.65rem;}
+
+/* ===== USER MENU MODAL ===== */
+.user-menu-modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:320px;width:100%;}
+.user-menu-name{font-weight:700;font-size:1rem;margin-bottom:2px;}
+.user-menu-email{font-size:0.76rem;color:var(--muted);margin-bottom:18px;}
+.user-menu-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);font-size:0.82rem;cursor:pointer;transition:color 0.2s;}
+.user-menu-item:last-child{border-bottom:none;}
+.user-menu-item:hover{color:var(--accent);}
+
+/* ===== TOAST & MISC ===== */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--accent);color:#0a0a0f;padding:11px 18px;border-radius:8px;font-weight:700;font-size:0.82rem;transform:translateY(80px);opacity:0;transition:all 0.3s;z-index:9999;}
+.toast.show{transform:translateY(0);opacity:1;}
+.info-banner{background:rgba(64,224,160,0.06);border:1px solid rgba(64,224,160,0.2);border-radius:10px;padding:14px 16px;font-size:0.79rem;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.info-banner strong{color:var(--accent2);}
+.warn-banner{background:rgba(240,192,64,0.06);border:1px solid rgba(240,192,64,0.2);border-radius:10px;padding:14px 16px;font-size:0.79rem;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.warn-banner strong{color:var(--accent);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:0.84rem;}
+.empty-state-icon{font-size:2.2rem;margin-bottom:12px;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<div id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">Earn<span>ova</span></div>
+    <div class="auth-tagline">Play. Earn. Win. — Free to join forever.</div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login',this)">Login</div>
+      <div class="auth-tab" onclick="switchAuthTab('register',this)">Register</div>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="loginEmail" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="loginPassword" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-auth" onclick="doLogin()">Login to Earnova</button>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="regUsername" type="text" placeholder="CoolPlayer99">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="regEmail" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="regPassword" type="password" placeholder="Min 6 characters">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Referral Code (optional)</label>
+        <input class="form-input" id="regRef" type="text" placeholder="EARNOVA_XXXX">
+      </div>
+      <button class="btn-auth" onclick="doRegister()">Create Account — Free!</button>
+    </div>
+    <div class="auth-disclaimer">By registering you agree to our <a href="#" onclick="showPage('policy')">Withdrawal Policy</a>, <a href="#" onclick="showPage('disclaimer')">Disclaimer</a>, and confirm you are 18+.</div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="mainApp">
+  <nav>
+    <div class="logo" onclick="switchTab('game',null)">Earn<span>ova</span></div>
+    <div class="nav-right">
+      <div class="nav-pill">🪙 <span id="navCoins">0</span></div>
+      <button class="pro-badge-btn" onclick="openProModal()" id="navProBtn">⚡ GO PRO</button>
+      <button class="nav-admin-btn" id="navAdminBtn" onclick="openAdminPanel()">🔐 ADMIN</button>
+      <div class="nav-user" id="navUser" onclick="openUserMenu()">👤 <span id="navUsername">User</span> ▾</div>
+    </div>
+  </nav>
+
+  <div class="tabs" id="mainTabs">
+    <div class="tab active"  onclick="switchTab('game',this)">🎮 Play</div>
+    <div class="tab"         onclick="switchTab('wallet',this)">💰 Wallet</div>
+    <div class="tab"         onclick="switchTab('referral',this)">👥 Refer</div>
+    <div class="tab"         onclick="switchTab('how',this)">📖 How It Works</div>
+    <div class="tab"         onclick="switchTab('faq',this)">❓ FAQ</div>
+    <div class="tab"         onclick="switchTab('about',this)">ℹ️ About</div>
+    <div class="tab"         onclick="switchTab('contact',this)">📬 Contact</div>
+    <div class="tab"         onclick="switchTab('policy',this)">📋 Policy</div>
+    <div class="tab"         onclick="switchTab('disclaimer',this)">⚖️ Disclaimer</div>
+  </div>
+
+  <!-- ===== GAME PANEL ===== -->
+  <div class="panel active" id="panel-game">
+    <div class="pro-active-banner" id="proActiveBanner">
+      <div>
+        <div class="pro-tag">⚡ PRO ACTIVE</div>
+        <div style="font-size:0.74rem;color:var(--muted);margin-top:4px;">5,000 pts = $0.01 · 7 days left</div>
+      </div>
+      <div style="font-size:0.72rem;color:var(--pro);font-weight:700;">2× faster earning</div>
+    </div>
+    <div class="game-layout">
+      <div class="game-wrap">
+        <div class="canvas-wrap">
+          <canvas id="gameCanvas" width="420" height="480"></canvas>
+          <div class="game-overlay" id="gameOverlay">
+            <div class="game-overlay-title">🎮 Ready?</div>
+            <div class="game-overlay-sub" id="overlaySub">Each block = 1 point.<br>FREE: 10,000 pts = $0.01 &nbsp;·&nbsp; PRO: 5,000 pts = $0.01</div>
+            <button class="btn btn-primary" onclick="startGame()">Start Game</button>
+            <button class="btn btn-pro btn-sm" onclick="openProModal()">⚡ Upgrade to PRO — $5/wk</button>
+          </div>
+        </div>
+        <div class="game-controls">
+          <button class="btn btn-outline btn-sm" onclick="startGame()">↺ Restart</button>
+          <button class="btn btn-primary btn-sm" onclick="switchTab('wallet',null)">💰 Wallet</button>
+          <button class="btn btn-pro btn-sm" onclick="openProModal()">⚡ PRO</button>
+        </div>
+      </div>
+      <div class="game-sidebar">
+        <div class="level-badge" id="levelBadge">LEVEL 1</div>
+        <div class="stat-box">
+          <div class="section-title">Live Stats</div>
+          <div class="stat-row"><span class="stat-key">Blocks Hit</span><span class="stat-val" id="scoreDisplay">0</span></div>
+          <div class="stat-row"><span class="stat-key">Session Pts</span><span class="stat-val" id="ptsDisplay">+0</span></div>
+          <div class="stat-row"><span class="stat-key">Multiplier</span><span class="stat-val" id="multDisplay">×1.0</span></div>
+          <div class="stat-row"><span class="stat-key">Lives</span><span class="stat-val" id="livesDisplay">❤️❤️❤️</span></div>
+          <div class="stat-row"><span class="stat-key">Mode</span><span class="stat-val" id="modeDisplay" style="color:var(--muted)">FREE</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="mult-label"><span>Combo Meter</span><span id="multPct">0%</span></div>
+          <div class="mult-bar"><div class="mult-fill" id="multFill" style="width:0%"></div></div>
+          <div style="font-size:0.69rem;color:var(--muted);margin-top:7px;line-height:1.5;">Chain blocks to boost up to ×3. Missing ball resets combo.</div>
+        </div>
+        <div class="stat-box">
+          <div class="section-title">My Totals</div>
+          <div class="stat-row"><span class="stat-key">Total Points</span><span class="stat-val" id="totalPtsGame">0</span></div>
+          <div class="stat-row"><span class="stat-key">Cash Value</span><span class="stat-val" style="color:var(--accent2)" id="cashValueGame">$0.0000</span></div>
+          <div class="stat-row"><span class="stat-key">Rate</span><span class="stat-val" id="rateGame" style="font-size:0.65rem;color:var(--muted)">10K pts=$0.01</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WALLET PANEL ===== -->
+  <div class="panel" id="panel-wallet">
+    <div class="wallet-grid">
+      <div class="wallet-card gold">
+        <div class="wc-label">Game Points</div>
+        <div class="wc-value gold" id="walletPts">0</div>
+        <div class="wc-sub" id="walletPtsCash">= $0.0000 (FREE rate)</div>
+      </div>
+      <div class="wallet-card green">
+        <div class="wc-label">Referral Cash</div>
+        <div class="wc-value green" id="walletRefCash">$0.00</div>
+        <div class="wc-sub">0 referrals × $1</div>
+      </div>
+      <div class="wallet-card purple">
+        <div class="wc-label">Milestone Bonus</div>
+        <div class="wc-value purple" id="walletMile">$0.00</div>
+        <div class="wc-sub">Referral milestones</div>
+      </div>
+      <div class="wallet-card pink">
+        <div class="wc-label">Total Balance</div>
+        <div class="wc-value pink" id="walletTotal">$0.00</div>
+        <div class="wc-sub">Points + Referrals</div>
+      </div>
+      <div class="wallet-card red">
+        <div class="wc-label">Min Withdrawal</div>
+        <div class="wc-value red">$10.00</div>
+        <div class="wc-sub" id="walletLeft">$10.00 more to go</div>
+      </div>
+    </div>
+    <div class="section-title">Point Rate Comparison</div>
+    <div class="rate-compare">
+      <div class="rate-box">
+        <div class="rate-mode">Free Mode</div>
+        <div class="rate-val gold">10,000 pts</div>
+        <div class="rate-desc">= $0.01 earned</div>
+      </div>
+      <div class="rate-box pro-box">
+        <div class="rate-mode">⚡ Pro Mode ($5/wk)</div>
+        <div class="rate-val purple">5,000 pts</div>
+        <div class="rate-desc">= $0.01 earned · 2× faster</div>
+      </div>
+    </div>
+    <div class="info-banner">
+      💡 <strong>Point system explained:</strong> Every block you break = 1 point (more with combo). FREE users need 10,000 points to earn $0.01. PRO users ($5/week) only need 5,000 points — half the grind. Referral cash is always much faster than gameplay!
+    </div>
+    <div class="section-title">Transaction History</div>
+    <div class="tx-list">
+      <div class="empty-state"><div class="empty-state-icon">📭</div>No transactions yet.</div>
+    </div>
+    <button class="btn btn-primary" onclick="switchTab('withdrawal',null)">💸 Request Withdrawal</button>
+  </div>
+
+  <!-- ===== WITHDRAWAL PANEL ===== -->
+  <div class="panel" id="panel-withdrawal">
+    <div class="withdraw-form">
+      <div class="withdraw-form-title">💸 Request Withdrawal</div>
+      <div class="withdraw-form-sub">Minimum $10.00. Processed within 5–14 business days via crypto. Make sure your wallet address matches the selected network.</div>
+      <div class="form-row" style="margin-bottom:14px;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Amount (USD)</label>
+          <input class="form-input" id="withdrawAmt" type="number" placeholder="10.00" min="10" step="0.01">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label">Network</label>
+          <select class="form-select" id="withdrawNet" onchange="updateWalletHint()">
+            <option value="">— Select Network —</option>
+            <option value="ETH">ETH — Ethereum (ERC20)</option>
+            <option value="BNB">BNB — Binance Smart Chain (BEP20)</option>
+            <option value="TRX">TRX — TRON (TRC20)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Wallet Address</label>
+        <input class="form-input" id="withdrawAddr" type="text" placeholder="Paste your wallet address here...">
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:5px;" id="walletHint">Select a network to see address format hint.</div>
+      </div>
+      <button class="btn btn-primary" onclick="submitWithdrawal()">Submit Withdrawal Request</button>
+    </div>
+
+    <div class="section-title">Supported Networks</div>
+    <div class="network-info">
+      <div class="network-card"><div class="network-name">⟠ ETH (ERC20)</div><div class="network-desc">Ethereum mainnet. Starts with 0x...</div><div class="network-time">⏱ 5–14 days</div></div>
+      <div class="network-card"><div class="network-name">🔶 BNB (BEP20)</div><div class="network-desc">Binance Smart Chain. Starts with 0x...</div><div class="network-time">⏱ 5–14 days</div></div>
+      <div class="network-card"><div class="network-name">🌐 TRX (TRC20)</div><div class="network-desc">TRON network. Starts with T...</div><div class="network-time">⏱ 5–14 days</div></div>
+    </div>
+
+    <div class="section-title">My Withdrawal History</div>
+    <div class="withdraw-history" id="withdrawHistoryList">
+      <div class="empty-state"><div class="empty-state-icon">📭</div>No withdrawal requests yet.</div>
+    </div>
+    <div style="margin-top:12px;">
+      <div class="warn-banner">⚠️ <strong>Important:</strong> Always double-check your wallet address and network. Incorrect addresses result in permanent loss of funds. Earnova is not responsible for user errors. Processing takes 5–14 business days.</div>
+    </div>
+  </div>
+
+  <!-- ===== REFERRAL PANEL ===== -->
+  <div class="panel" id="panel-referral">
+    <div class="ref-box">
+      <div class="section-title">Your Referral Link</div>
+      <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Share this link. When your friend subscribes to PRO ($5/week), you earn <strong style="color:var(--accent)">$1.00 instantly</strong>. Stack referrals to unlock massive milestone bonuses!</p>
+      <div class="ref-link-row">
+        <input class="ref-input" id="refLink" value="earnova.app/join?ref=USER123" readonly>
+        <button class="btn btn-primary btn-sm" onclick="copyRef()">Copy</button>
+      </div>
+    </div>
+    <div class="section-title">Milestone Rewards</div>
+    <div class="mile-track">
+      <div class="mile-item"><div class="mile-icon">🥉</div><div class="mile-info"><div class="mile-title">10 PRO Referrals</div><div class="mile-desc">$1 per referral + first milestone bonus</div><div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div></div><div class="mile-reward">+$10</div></div>
+      <div class="mile-item"><div class="mile-icon">🥈</div><div class="mile-info"><div class="mile-title">50 PRO Referrals</div><div class="mile-desc">$1 per referral + silver milestone bonus</div><div class="progress-bar"><div class="progress-fill" style="width:6%"></div></div></div><div class="mile-reward">+$100</div></div>
+      <div class="mile-item mega"><div class="mile-icon">🥇</div><div class="mile-info"><div class="mile-title">100 PRO Referrals</div><div class="mile-desc">$1 per referral + gold milestone bonus</div><div class="progress-bar"><div class="progress-fill" style="width:3%"></div></div></div><div class="mile-reward">+$300</div></div>
+      <div class="mile-item mega"><div class="mile-icon">💎</div><div class="mile-info"><div class="mile-title">250 PRO Referrals</div><div class="mile-desc">Diamond tier — ultimate earner status</div><div class="progress-bar"><div class="progress-fill" style="width:1.2%"></div></div></div><div class="mile-reward">+$1,000</div></div>
+    </div>
+    <div class="sim-box">
+      <div class="sim-title">📊 Earnings Simulator</div>
+      <div style="margin-bottom:12px;">
+        <div class="mult-label"><span style="font-size:0.8rem;">How many PRO referrals?</span><span id="refCount" style="color:var(--accent);font-family:'Space Mono',monospace;font-weight:700;">5</span></div>
+        <input type="range" min="1" max="250" value="5" oninput="updateRefSim(this.value)">
+      </div>
+      <div class="sim-row"><span class="sim-key">Referrals</span><span class="sim-val" id="simRefs">5 people</span></div>
+      <div class="sim-row"><span class="sim-key">Per-referral ($1 each)</span><span class="sim-val pos" id="simPerRef">$5.00</span></div>
+      <div class="sim-row"><span class="sim-key">Milestone bonuses</span><span class="sim-val mile" id="simMile">$0.00</span></div>
+      <div class="sim-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px;"><span class="sim-key" style="font-weight:700;color:var(--text);">💰 Total you earn</span><span class="sim-val net" id="simNet">$5.00</span></div>
+      <div style="margin-top:10px;font-size:0.7rem;color:var(--muted);">* Milestone bonuses stack. 100 referrals = $100 per-referral + $10 + $100 + $300 in bonuses = $510 total.</div>
+    </div>
+    <div class="section-title">Your Referrals (<span id="refTableCount">0</span>)</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;">
+      <table class="ref-table">
+        <thead><tr><th>User</th><th>Joined</th><th>Plan</th><th>You Earned</th></tr></thead>
+        <tbody>
+          <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">No referrals yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="warn-banner">⚡ <strong>Important:</strong> You only earn the $1 when your referral <strong>subscribes to PRO</strong>. Free sign-ups don't count.</div>
+  </div>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <div class="panel" id="panel-how">
+    <div class="section-title">The Full System</div>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-num">01</div><div class="how-title">🎮 Play & Earn Points</div><div class="how-desc">Each block you hit = 1 point. Combo multiplier (up to ×3) rewards skilled play. FREE: 10,000 pts = $0.01. It's a slow grind — but it's free money, no cost to join.</div></div>
+      <div class="how-card"><div class="how-num">02</div><div class="how-title">⚡ Go PRO — 2× Speed</div><div class="how-desc">Pay $5/week for PRO. Now 5,000 pts = $0.01. Same earnings, half the grind. Paddle turns purple, ball glows, daily cap doubles. Cancel anytime.</div></div>
+      <div class="how-card"><div class="how-num">03</div><div class="how-title">👥 Refer & Earn Fast</div><div class="how-desc">Share your link. When your referral subscribes PRO, you earn $1 instantly. 5 referrals = $5 cash — that's months of gameplay in one share.</div></div>
+      <div class="how-card"><div class="how-num">04</div><div class="how-title">🏆 Milestone Bonuses</div><div class="how-desc">10 referrals → +$10. 50 referrals → +$100. 100 referrals → +$300. 250 referrals → +$1,000. These bonuses stack.</div></div>
+      <div class="how-card"><div class="how-num">05</div><div class="how-title">💸 Withdraw Crypto</div><div class="how-desc">Hit $10 total balance and withdraw via ETH (ERC20), BNB (BEP20), or TRX (TRC20). Processed within 5–14 business days.</div></div>
+      <div class="how-card"><div class="how-num">06</div><div class="how-title">🔄 How Money Circulates</div><div class="how-desc">PRO subscriptions fund everything. 80% goes back to players (referral bonuses + point payouts). Platform keeps 20% to operate. Transparent and sustainable.</div></div>
+    </div>
+    <div class="section-title">Earnings Speed Comparison</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;">
+      <table class="ref-table">
+        <thead><tr><th>Method</th><th>Cost</th><th>To earn $10</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>🎮 Free gameplay</td><td>$0</td><td style="color:var(--muted)">Very slow</td><td style="color:var(--muted);font-size:0.72rem;">Need 100M pts</td></tr>
+          <tr><td>⚡ PRO gameplay</td><td>$5/wk</td><td style="color:var(--accent)">Slow</td><td style="color:var(--muted);font-size:0.72rem;">Need 50M pts</td></tr>
+          <tr><td>👥 10 referrals</td><td>$0</td><td style="color:var(--accent2)">Fast</td><td style="color:var(--muted);font-size:0.72rem;">$10 + $10 bonus = $20</td></tr>
+          <tr><td>🏆 50 referrals</td><td>$0</td><td style="color:var(--pro)">Very Fast</td><td style="color:var(--muted);font-size:0.72rem;">$50 + $110 bonus = $160</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-banner">⚖️ <strong>Legal note:</strong> Earnova is legal because (1) joining is FREE, (2) earnings are skill-based, (3) referral bonuses are tied to a real product subscription — not just recruitment. Always check your local laws.</div>
+  </div>
+
+  <!-- ===== FAQ PANEL ===== -->
+  <div class="panel" id="panel-faq">
+    <div class="faq-section-label">🎮 Game Points</div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I earn points? <span class="faq-arrow">▼</span></div><div class="faq-a">Every block you hit in the game = 1 point. Your combo multiplier (up to ×3.0) increases the points you get per hit when you chain consecutive blocks without missing the ball.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How much is a point worth in FREE mode? <span class="faq-arrow">▼</span></div><div class="faq-a">In FREE mode, 10,000 points = $0.01 (one cent). You need 10,000,000 points to earn $10 (the withdrawal minimum). It's a long grind by design — referrals are the fast lane!</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How much is a point worth in PRO mode? <span class="faq-arrow">▼</span></div><div class="faq-a">In PRO mode ($5/week), 5,000 points = $0.01. That's exactly 2× the free rate. PRO is worth it for dedicated players who log in daily.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is there a daily point earning limit? <span class="faq-arrow">▼</span></div><div class="faq-a">Yes. FREE users can earn up to 50,000 points per day. PRO users have a cap of 100,000 points per day. Referral earnings have no daily cap.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do my points ever expire? <span class="faq-arrow">▼</span></div><div class="faq-a">No, your points don't expire as long as your account is active. Accounts with zero activity for 365+ days may have points reviewed per our Terms of Service.</div></div>
+    </div>
+    <div class="faq-section-label">👥 Referral System</div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How exactly do I earn from referrals? <span class="faq-arrow">▼</span></div><div class="faq-a">Share your unique referral link. When someone clicks it AND subscribes to PRO ($5/week), you earn $1.00 credited instantly to your wallet. Free sign-ups without a PRO subscription do not count.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What are the milestone bonuses? <span class="faq-arrow">▼</span></div><div class="faq-a">10 referrals → +$10 bonus, 50 referrals → +$100 bonus, 100 referrals → +$300 bonus, 250 referrals → +$1,000 bonus. They are cumulative. Total at 100 referrals: $100 + $10 + $100 + $300 = $510.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I refer myself with a second account? <span class="faq-arrow">▼</span></div><div class="faq-a">No. Self-referrals result in immediate account suspension and forfeiture of all earnings. Our system detects duplicate accounts through device fingerprinting, IP tracking, and payment information.</div></div>
+    </div>
+    <div class="faq-section-label">💸 Withdrawals</div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the minimum withdrawal amount? <span class="faq-arrow">▼</span></div><div class="faq-a">The minimum withdrawal is $10.00. Your total balance — which includes game point cash value, referral earnings, and milestone bonuses — all count together toward this threshold.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I withdraw? <span class="faq-arrow">▼</span></div><div class="faq-a">Go to your Wallet tab and tap "Request Withdrawal". Select your crypto network (ETH/ERC20, BNB/BEP20, or TRX/TRC20), enter your wallet address, and submit. Processing takes 5–14 business days.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Are there withdrawal fees? <span class="faq-arrow">▼</span></div><div class="faq-a">Withdrawals above $20 are fee-free. For the $10–$20 range, a small $0.50 processing fee applies. Network gas fees may also apply and vary by blockchain.</div></div>
+    </div>
+    <div class="faq-section-label">⚡ PRO Subscription</div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What exactly does PRO give me? <span class="faq-arrow">▼</span></div><div class="faq-a">PRO ($5/week) gives you: 5,000 pts = $0.01 instead of 10,000 (2× earn rate), double daily point cap (100K vs 50K), PRO purple paddle + glowing ball, and priority withdrawal processing.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel PRO anytime? <span class="faq-arrow">▼</span></div><div class="faq-a">Yes. PRO is week-to-week with no long-term commitment. Cancel anytime from your account settings. Your PRO benefits remain active until the end of your paid week.</div></div>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT ===== -->
+  <div class="panel" id="panel-about">
+    <div class="page-hero">
+      <div class="page-hero-title">About <span>Earnova</span></div>
+      <div class="page-hero-sub">A reward-based gaming platform where your skills and social network translate into real earnings.</div>
+    </div>
+    <div class="section-title">What We Do</div>
+    <div class="about-grid">
+      <div class="about-card"><div class="about-card-icon">🎮</div><div class="about-card-title">Activity-Based Rewards</div><div class="about-card-desc">Earnova rewards real gameplay. Every block you break, every combo you chain — your time and skill generate points that convert to real value. No fake promises, just honest mechanics.</div></div>
+      <div class="about-card"><div class="about-card-icon">👥</div><div class="about-card-title">Referral Ecosystem</div><div class="about-card-desc">Our referral system is built around a real product subscription (PRO). You earn because you bring value to the platform — not just for signing people up. This keeps Earnova sustainable and legal.</div></div>
+      <div class="about-card"><div class="about-card-icon">🔒</div><div class="about-card-title">Secure & Transparent</div><div class="about-card-desc">Built on Firebase with role-based security. 80% of PRO subscription revenue goes back to players. We show exactly how money circulates — no hidden fees, no surprises.</div></div>
+      <div class="about-card"><div class="about-card-icon">🌍</div><div class="about-card-title">Global Community</div><div class="about-card-desc">Players from anywhere in the world can join free. Withdraw via crypto (ETH/ERC20, BNB/BEP20, or TRX/TRC20) to your wallet — no bank account required.</div></div>
+    </div>
+    <div class="token-banner">
+      <div class="token-label">🚀 Coming Soon</div>
+      <div class="token-title">The Earnova Token (ENV)</div>
+      <div class="token-desc">We are exploring the launch of the Earnova Token (ENV) — a native utility token that will integrate with our rewards system, allowing players to earn, stake, and spend ENV within the ecosystem. This is in early planning stages. No guarantees are made on token value or timeline. Stay tuned for official announcements.</div>
+    </div>
+    <div class="disclaimer-box">
+      <div class="disclaimer-title">⚖️ Our Core Values</div>
+      <p class="policy-text">Earnova is built on honesty. We do not guarantee income. We do not promise riches. We believe in fair play, transparent systems, and rewarding genuine participation. Read our full disclaimer before participating.</p>
+    </div>
+  </div>
+
+  <!-- ===== CONTACT ===== -->
+  <div class="panel" id="panel-contact">
+    <div class="page-hero">
+      <div class="page-hero-title">📬 Contact <span>Us</span></div>
+      <div class="page-hero-sub">Have a question, issue, or feedback? We're here to help. Response time: 24–72 hours on business days.</div>
+    </div>
+    <div class="contact-card">
+      <div class="section-title">Get In Touch</div>
+      <div class="contact-method">
+        <div class="contact-icon">📧</div>
+        <div>
+          <div class="contact-info-title">General Support</div>
+          <div class="contact-info-val">earnova@zohomail.com</div>
+        </div>
+      </div>
+      <div class="contact-method">
+        <div class="contact-icon">💼</div>
+        <div>
+          <div class="contact-info-title">Business & Partnerships</div>
+          <div class="contact-info-val">earnova@zohomail.com</div>
+        </div>
+      </div>
+      <div class="contact-method">
+        <div class="contact-icon">🔐</div>
+        <div>
+          <div class="contact-info-title">Security & Abuse Reports</div>
+          <div class="contact-info-val">earnova@zohomail.com</div>
+        </div>
+      </div>
+      <div class="contact-method">
+        <div class="contact-icon">💸</div>
+        <div>
+          <div class="contact-info-title">Withdrawal Issues</div>
+          <div class="contact-info-val">earnova@zohomail.com</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-card">
+      <div class="section-title">Send a Message</div>
+      <div class="form-group"><label class="form-label">Subject</label><input class="form-input" type="text" placeholder="e.g. Withdrawal pending for 14 days"></div>
+      <div class="form-group"><label class="form-label">Your Message</label><textarea class="form-input" rows="5" placeholder="Describe your issue or question in detail..." style="resize:vertical;"></textarea></div>
+      <div class="form-group"><label class="form-label">Your Email</label><input class="form-input" type="email" placeholder="you@example.com"></div>
+      <button class="btn btn-primary" onclick="showToast('✅ Message sent! We will reply within 24–72 hours.')">Send Message</button>
+    </div>
+    <div class="info-banner">📅 <strong>Response times:</strong> General support 24–48hrs · Withdrawal issues 48–72hrs · Security reports within 24hrs. We do not offer live chat at this time.</div>
+  </div>
+
+  <!-- ===== WITHDRAWAL POLICY ===== -->
+  <div class="panel" id="panel-policy">
+    <div class="page-hero">
+      <div class="page-hero-title">📋 Withdrawal <span>Policy</span></div>
+      <div class="page-hero-sub">Please read this carefully before requesting a withdrawal. By submitting a request, you agree to these terms.</div>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Minimum Withdrawal</div>
+      <p class="policy-text">The minimum withdrawal amount is <strong style="color:var(--accent)">$10.00 USD</strong>. Requests below this threshold will be automatically rejected. Your total balance includes game point value, referral earnings, and milestone bonuses combined.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Processing Time</div>
+      <p class="policy-text">All withdrawal requests are processed <strong style="color:var(--accent)">manually</strong> by the Earnova team. Standard processing time is <strong style="color:var(--accent)">5 to 14 business days</strong> from the date your request is approved. Business days exclude weekends and public holidays. During high-volume periods, processing may take up to 21 days.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Supported Networks</div>
+      <ul class="policy-list">
+        <li><strong>ETH (ERC20)</strong> — Ethereum mainnet. Wallet address starts with 0x. Standard gas fees may apply.</li>
+        <li><strong>BNB (BEP20)</strong> — Binance Smart Chain. Wallet address starts with 0x. Low gas fees.</li>
+        <li><strong>TRX (TRC20)</strong> — TRON network. Wallet address starts with T. Very low fees.</li>
+      </ul>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">User Responsibility</div>
+      <ul class="policy-list">
+        <li>You are solely responsible for providing the correct wallet address and network.</li>
+        <li>Earnova is NOT responsible for funds sent to wrong addresses due to user error.</li>
+        <li>Ensure your wallet supports the selected network before submitting.</li>
+        <li>Withdrawal requests cannot be cancelled once submitted and approved.</li>
+      </ul>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Fees</div>
+      <p class="policy-text">Withdrawals above $20 are fee-free from Earnova. For $10–$20 withdrawals, a $0.50 processing fee is deducted. Blockchain network gas fees are separate and may vary. These are not charged by Earnova.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Right to Refuse</div>
+      <p class="policy-text">Earnova reserves the right to refuse, delay, or cancel any withdrawal request if we suspect fraud, abuse of referral systems, self-referrals, bot usage, or any violation of our Terms of Service. Accounts found in violation forfeit all earnings.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Changes to Policy</div>
+      <p class="policy-text">This policy may be updated at any time. Continued use of Earnova constitutes acceptance of the current policy. Last updated: April 2026.</p>
+    </div>
+  </div>
+
+  <!-- ===== DISCLAIMER ===== -->
+  <div class="panel" id="panel-disclaimer">
+    <div class="page-hero" style="border-color:rgba(255,64,96,0.3);background:rgba(255,64,96,0.05);">
+      <div class="page-hero-title">⚖️ <span style="color:var(--danger);">Disclaimer</span></div>
+      <div class="page-hero-sub">Important legal and financial information. Please read before participating on Earnova.</div>
+    </div>
+    <div class="disclaimer-box">
+      <div class="disclaimer-title">No Guaranteed Income</div>
+      <p class="policy-text">Earnova does NOT guarantee any income, earnings, or profits. Rewards are based on active participation, gameplay performance, and successful referrals. Past earnings of other users do not represent what you will earn. Results vary significantly based on individual effort and skill.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Activity-Based Rewards Only</div>
+      <p class="policy-text">All rewards on Earnova are tied directly to real activities: playing the block game, breaking blocks, and successfully referring users who subscribe to PRO. There is no passive income. There are no investment returns. Earnova is NOT an investment platform.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">System May Change</div>
+      <p class="policy-text">Earnova reserves the right to modify, reduce, suspend, or terminate its reward system at any time without prior notice. This includes point values, referral rates, milestone bonuses, PRO pricing, and withdrawal minimums. We aim to give advance notice where possible but are not obligated to do so.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Not Financial Advice</div>
+      <p class="policy-text">Nothing on this platform constitutes financial, investment, or legal advice. Do not use money you cannot afford to lose when purchasing PRO subscriptions. Earnova is an entertainment platform with optional reward features.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Crypto Risks</div>
+      <p class="policy-text">Withdrawals are made in cryptocurrency. Crypto values fluctuate. Earnova pays out in USDT or equivalent stablecoins where possible, but cannot guarantee USD-equivalent value at time of receipt. You are responsible for understanding the crypto assets you receive.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Referral System Disclosure</div>
+      <p class="policy-text">The referral program rewards users for introducing new PRO subscribers. This is tied to a real product (PRO subscription) and is not a pyramid or Ponzi scheme. However, referral income is not guaranteed and depends entirely on the willingness of your network to subscribe.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Age Requirement</div>
+      <p class="policy-text">You must be at least 18 years old (or the legal age of majority in your jurisdiction) to register and participate on Earnova. By creating an account, you confirm that you meet this requirement.</p>
+    </div>
+    <div class="policy-section">
+      <div class="policy-section-title">Jurisdiction</div>
+      <p class="policy-text">It is your responsibility to ensure that participating in Earnova's reward system is legal in your country or region. Earnova does not make any representations regarding legality in specific jurisdictions. Residents of certain countries may be excluded.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="adminPanel">
+  <div class="admin-nav">
+    <div class="admin-logo">🔐 Earn<span>ova</span> Admin</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <span style="font-size:0.72rem;color:var(--muted);">Logged in as <strong style="color:var(--danger);">admin</strong></span>
+      <button class="btn btn-outline btn-sm" onclick="closeAdminPanel()">← Back to App</button>
+    </div>
+  </div>
+  <div class="admin-content">
+    <div class="admin-grid">
+      <div class="admin-stat"><div class="admin-stat-label">Total Users</div><div class="admin-stat-val gold" id="adminTotalUsers">4</div></div>
+      <div class="admin-stat"><div class="admin-stat-label">PRO Subscribers</div><div class="admin-stat-val green" id="adminProUsers">2</div></div>
+      <div class="admin-stat red"><div class="admin-stat-label">Pending Withdrawals</div><div class="admin-stat-val danger" id="adminPendingWithdraw">1</div></div>
+      <div class="admin-stat"><div class="admin-stat-label">Total Paid Out</div><div class="admin-stat-val gold" id="adminPaidOut">$15.00</div></div>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('users',this)">👤 Users</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('withdrawals',this)">💸 Withdrawals</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('gamerecords',this)">🎮 Game Records</button>
+    </div>
+
+    <!-- Users Tab -->
+    <div id="adminTab-users" class="admin-section">
+      <div class="admin-section-title">All Users</div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>User ID</th><th>Username</th><th>Email</th><th>Role</th><th>Balance</th><th>Total Earned</th><th>Joined</th></tr></thead>
+          <tbody id="adminUsersTable">
+            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#001</td><td>DemoUser</td><td>user@demo.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$3.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$3.00</td><td style="color:var(--muted);font-size:0.75rem;">Today</td></tr>
+            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#002</td><td>Wei_L</td><td>wei@example.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--muted);font-size:0.75rem;">Today</td></tr>
+            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#003</td><td>Amir_S</td><td>amir@example.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--muted);font-size:0.75rem;">Yesterday</td></tr>
+            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#ADM</td><td>Admin</td><td>admin@earnova.com</td><td><span class="status-badge status-rejected">admin</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">—</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">—</td><td style="color:var(--muted);font-size:0.75rem;">Platform owner</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Withdrawals Tab -->
+    <div id="adminTab-withdrawals" class="admin-section" style="display:none;">
+      <div class="admin-section-title">Withdrawal Requests</div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Request ID</th><th>User</th><th>Amount</th><th>Network</th><th>Wallet Address</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="adminWithdrawTable">
+            <tr>
+              <td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#WD001</td>
+              <td>DemoUser</td>
+              <td style="font-family:'Space Mono',monospace;color:var(--accent);">$10.00</td>
+              <td><span class="badge badge-green">TRC20</span></td>
+              <td style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);">TXxample...abc</td>
+              <td style="color:var(--muted);font-size:0.75rem;">Today</td>
+              <td><span class="status-badge status-pending" id="wdStatus-WD001">PENDING</span></td>
+              <td>
+                <button class="btn-approve" onclick="adminAction('WD001','approve')">✓ Approve</button>
+                <button class="btn-reject" onclick="adminAction('WD001','reject')">✕ Reject</button>
+                <button class="btn-paid" onclick="adminAction('WD001','paid')">✔ Mark Paid</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="adminWithdrawEmpty" class="empty-state" style="display:none;"><div class="empty-state-icon">✅</div>No pending withdrawal requests.</div>
+    </div>
+
+    <!-- Game Records Tab -->
+    <div id="adminTab-gamerecords" class="admin-section" style="display:none;">
+      <div class="admin-section-title">Recent Game Records</div>
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Record ID</th><th>User</th><th>Score (blocks)</th><th>Points Earned</th><th>Mode</th><th>Timestamp</th></tr></thead>
+          <tbody id="adminGameTable">
+            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#GR001</td><td>DemoUser</td><td style="color:var(--accent2);">240</td><td style="color:var(--accent);font-family:'Space Mono',monospace;">2,400 pts</td><td><span class="badge badge-yellow">FREE</span></td><td style="color:var(--muted);font-size:0.75rem;">Today, 2:10 PM</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRO MODAL -->
+<div class="modal-backdrop" id="proModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProModal()">✕</button>
+    <div class="pro-tag" style="margin-bottom:10px;">⚡ PRO MODE</div>
+    <div class="modal-title">Earn 2× Faster</div>
+    <div class="modal-sub">One week of PRO for $5. Your point rate doubles — 5,000 pts = $0.01 instead of 10,000. Your paddle and ball go purple. 😎</div>
+    <div class="pro-features">
+      <div class="pro-feat">5,000 pts = $0.01 (free needs 10,000)</div>
+      <div class="pro-feat">PRO purple paddle + glowing ball</div>
+      <div class="pro-feat">Double daily point cap (100K/day)</div>
+      <div class="pro-feat">Priority withdrawal processing</div>
+      <div class="pro-feat">PRO badge on referral profile</div>
+    </div>
+    <div style="background:rgba(160,96,255,0.08);border:1px solid rgba(160,96,255,0.25);border-radius:8px;padding:13px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:1.8rem;font-weight:700;color:var(--pro);font-family:'Space Mono',monospace;">$5.00</div>
+      <div style="font-size:0.76rem;color:var(--muted);">per week · cancel anytime</div>
+    </div>
+    <!-- Step 1: Pay button -->
+    <div id="nowpayStep1">
+      <button class="btn btn-pro" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="initiateNowPayment()">
+        <span style="font-size:1.1rem;">💎</span>
+        Pay $5.99 with USDT (ERC20)
+      </button>
+      <div style="font-size:0.7rem;color:var(--muted);text-align:center;margin-top:10px;">🔒 Secure crypto payment · Auto-activates PRO · No hidden fees</div>
+    </div>
+    <!-- Step 2: Generating -->
+    <div id="nowpayStep2" style="display:none;text-align:center;padding:16px 0;">
+      <div style="font-size:1.4rem;margin-bottom:8px;">⏳</div>
+      <div style="font-size:0.85rem;color:var(--muted);">Generating your payment address...</div>
+    </div>
+    <!-- Step 3: Payment address + QR -->
+    <div id="nowpayStep3" style="display:none;">
+      <div style="text-align:center;margin-bottom:10px;">
+        <div id="nowpayQR" style="display:inline-block;background:#fff;padding:8px;border-radius:8px;"></div>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:4px;">Send exactly this amount of USDT (ERC20):</div>
+      <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:10px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--pro);" id="nowpayAmount">$5.00</div>
+          <div style="font-size:0.68rem;color:var(--muted);">USDT ERC20</div>
+        </div>
+        <div style="font-size:0.72rem;font-family:'Space Mono',monospace;color:var(--accent);word-break:break-all;" id="nowpayAddr">-</div>
+        <button onclick="copyNowpayAddr()" style="background:rgba(160,96,255,0.2);border:none;color:var(--pro);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.75rem;flex-shrink:0;">Copy</button>
+      </div>
+      <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.25);border-radius:8px;padding:10px;font-size:0.72rem;color:#f0c040;margin-bottom:10px;">
+        ⚠️ Send <strong>exact amount</strong> to the address above. PRO activates automatically within 1–3 minutes after confirmation.
+      </div>
+      <div style="text-align:center;font-size:0.75rem;color:var(--muted);">
+        ⏳ Waiting for payment... <span id="nowpayTimer">10:00</span>
+      </div>
+    </div>
+    <!-- Step 4: Confirming -->
+    <div id="nowpayStep4" style="display:none;text-align:center;padding:16px 0;">
+      <div style="font-size:1.4rem;margin-bottom:8px;">🔄</div>
+      <div style="font-size:0.85rem;color:var(--accent2);font-weight:700;">Payment detected!</div>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Confirming on blockchain...</div>
+    </div>
+    <!-- Step 5: Success -->
+    <div id="nowpayStep5" style="display:none;text-align:center;padding:16px 0;">
+      <div style="font-size:1.8rem;margin-bottom:8px;">✅</div>
+      <div style="font-size:0.9rem;color:var(--accent2);font-weight:700;">Payment Confirmed!</div>
+      <div style="font-size:0.76rem;color:var(--muted);margin-top:4px;">PRO activated for 7 days. Enjoy! ⚡</div>
+    </div>
+  </div>
+</div>
+
+<!-- USER MENU MODAL -->
+<div class="modal-backdrop" id="userMenuModal">
+  <div class="user-menu-modal">
+    <button class="modal-close" onclick="closeUserMenu()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;">✕</button>
+    <div class="user-menu-name" id="umName">DemoUser</div>
+    <div class="user-menu-email" id="umEmail">user@demo.com</div>
+    <div class="user-menu-item" onclick="closeUserMenu();switchTab('wallet',null)">💰 My Wallet</div>
+    <div class="user-menu-item" onclick="closeUserMenu();switchTab('withdrawal',null)">💸 Request Withdrawal</div>
+    <div class="user-menu-item" onclick="closeUserMenu();switchTab('referral',null)">👥 Referral Program</div>
+    <div class="user-menu-item" onclick="closeUserMenu();openProModal()">⚡ Upgrade to PRO</div>
+    <div class="user-menu-item" style="color:var(--danger);" onclick="doLogout()">🚪 Logout</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== FIREBASE SETUP =====
+const firebaseConfig = {
+  apiKey: "AIzaSyDwx5nbn9DN6V8iJgmS6yvXeEjTR0UF4JY",
+  authDomain: "earnovagaming.firebaseapp.com",
+  projectId: "earnovagaming",
+  storageBucket: "earnovagaming.firebasestorage.app",
+  messagingSenderId: "389171463097",
+  appId: "1:389171463097:web:581ee51fd10f0516d32c68",
+  measurementId: "G-YT1LEHQSC3"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const serverTimestamp = firebase.firestore.FieldValue.serverTimestamp;
+
+// ===== STATE =====
+let currentUser = null;
+let isPro = false;
+let totalPts = 0;
+let sessionPts = 0;
+let referralCash = 0;
+let milestoneCash = 0;
+let withdrawalRequests = [];
+
+// ===== AUTH STATE LISTENER =====
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+      if (snap.exists) {
+        const data = snap.data();
+        // Check PRO expiry
+        let proActive = false;
+        if (data.isPro && data.proExpiry) {
+          proActive = data.proExpiry.toDate() > new Date();
+          if (!proActive) {
+            await db.collection('users').doc(user.uid).update({ isPro: false });
+          }
+        }
+        currentUser = { email: user.email, uid: user.uid, ...data, isPro: proActive };
+        isPro = proActive;
+        totalPts = data.totalPts || 0;
+        referralCash = data.referralCash || 0;
+        milestoneCash = data.milestoneCash || 0;
+        loginSuccess(user.email, currentUser);
+      }
+    } catch(e) { console.error('Auth state error:', e); }
+  }
+});
+
+// ===== AUTH =====
+function switchAuthTab(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('authErr').style.display = 'none';
+}
+window.switchAuthTab = switchAuthTab;
+
+function showAuthError(msg) {
+  const el = document.getElementById('authErr');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('loginPassword').value;
+  if (!email || !pass) { showAuthError('Please enter email and password.'); return; }
+
+  // Admin shortcut — bypasses Firebase entirely
+  if (email === 'admin@earnova.com' && pass === 'admin2024!') {
+    currentUser = { email, uid: 'admin', role: 'admin', username: 'Admin', balance: 0, total_earned: 0 };
+    loginSuccess(email, currentUser);
+    return;
+  }
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    const snap = await db.collection('users').doc(cred.user.uid).get();
+    if (snap.exists) {
+      const data = snap.data();
+      let proActive = false;
+      if (data.isPro && data.proExpiry) {
+        proActive = data.proExpiry.toDate() > new Date();
+      }
+      currentUser = { email, uid: cred.user.uid, ...data, isPro: proActive };
+      isPro = proActive;
+      totalPts = data.totalPts || 0;
+      referralCash = data.referralCash || 0;
+      milestoneCash = data.milestoneCash || 0;
+      loginSuccess(email, currentUser);
+    }
+  } catch(err) {
+    const msg = (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')
+      ? 'Invalid email or password.' : err.message;
+    showAuthError(msg);
+  }
+}
+window.doLogin = doLogin;
+
+async function doRegister() {
+  const username = document.getElementById('regUsername').value.trim();
+  const email    = document.getElementById('regEmail').value.trim().toLowerCase();
+  const pass     = document.getElementById('regPassword').value;
+  const refCode  = document.getElementById('regRef').value.trim().toUpperCase();
+
+  if (!username || !email || !pass) { showAuthError('Please fill in all fields.'); return; }
+  if (pass.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    const userData = {
+      username, email, role: 'user',
+      balance: 0, total_earned: 0,
+      isPro: false, proExpiry: null,
+      referredBy: refCode || null,
+      totalPts: 0, referralCash: 0, milestoneCash: 0,
+      referralCount: 0,
+      createdAt: serverTimestamp()
+    };
+    await db.collection('users').doc(cred.user.uid).set(userData);
+
+    // Credit referrer if valid code — handled after PRO purchase
+    if (refCode) {
+      try {
+        // Referral credit is applied when referred user purchases PRO
+        console.log('Referral code used:', refCode);
+      } catch(e) {}
+    }
+
+    currentUser = { email, uid: cred.user.uid, ...userData };
+    isPro = false; totalPts = 0; referralCash = 0; milestoneCash = 0;
+    loginSuccess(email, currentUser);
+    showToast('🎉 Welcome to Earnova, ' + username + '!');
+  } catch(err) {
+    const msg = err.code === 'auth/email-already-in-use' ? 'Email already registered.' : err.message;
+    showAuthError(msg);
+  }
+}
+window.doRegister = doRegister;
+
+function loginSuccess(email, user) {
+  currentUser = { email, ...user };
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  document.getElementById('navUsername').textContent = user.username || 'User';
+  document.getElementById('umName').textContent = user.username || 'User';
+  document.getElementById('umEmail').textContent = email;
+  const refName = (user.username || 'USER').toUpperCase().replace(/\s/g,'');
+  document.getElementById('refLink').value = 'earnovagaming.netlify.app/join?ref=' + refName;
+  if (user.role === 'admin') {
+    document.getElementById('navAdminBtn').style.display = 'block';
+  }
+  if (isPro) {
+    document.getElementById('proActiveBanner').style.display = 'flex';
+    document.getElementById('navProBtn').textContent = '⚡ PRO ACTIVE';
+    document.getElementById('navProBtn').style.background = 'linear-gradient(135deg,#40c070,#208050)';
+  }
+  updateAllUI();
+  loadWithdrawalHistory();
+  const canvas = document.getElementById('gameCanvas');
+  const ctx2 = canvas.getContext('2d');
+  ctx2.fillStyle = '#0d0d18';
+  ctx2.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+async function doLogout() {
+  closeUserMenu();
+  // Save points before logout
+  if (currentUser && currentUser.uid && totalPts > 0) {
+    try {
+      await db.collection('users').doc(currentUser.uid).update({ totalPts });
+    } catch(e) {}
+  }
+  await auth.signOut();
+  currentUser = null;
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('authErr').style.display = 'none';
+  isPro = false; totalPts = 0; sessionPts = 0; referralCash = 0; milestoneCash = 0;
+  showToast('👋 Logged out successfully.');
+}
+window.doLogout = doLogout;
+
+// ===== USER MENU =====
+function openUserMenu() { document.getElementById('userMenuModal').classList.add('open'); }
+function closeUserMenu() { document.getElementById('userMenuModal').classList.remove('open'); }
+window.openUserMenu = openUserMenu;
+window.closeUserMenu = closeUserMenu;
+
+// ===== ADMIN PANEL =====
+function openAdminPanel() {
+  if (!currentUser || currentUser.role !== 'admin') { showToast('⛔ Access denied.'); return; }
+  document.getElementById('adminPanel').style.display = 'block';
+  loadAdminData();
+}
+function closeAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
+window.openAdminPanel = openAdminPanel;
+window.closeAdminPanel = closeAdminPanel;
+
+async function loadAdminData() {
+  try {
+    // Load all withdrawals
+    const wSnap = await db.collection('withdrawals').get();
+    const allW = [];
+    wSnap.forEach(d => allW.push({ id: d.id, ...d.data() }));
+    renderAdminWithdrawals(allW);
+
+    // Load users count
+    const uSnap = await db.collection('users').get();
+    let proCount = 0;
+    uSnap.forEach(d => { if (d.data().isPro) proCount++; });
+    document.getElementById('adminTotalUsers').textContent = uSnap.size;
+    document.getElementById('adminProUsers').textContent = proCount;
+    document.getElementById('adminPendingWithdraw').textContent = allW.filter(w => w.status === 'pending').length;
+  } catch(e) { console.error('Admin load error:', e); }
+}
+
+function renderAdminWithdrawals(list) {
+  const tbody = document.getElementById('adminWithdrawTable');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:24px;text-align:center;color:var(--muted);">No withdrawal requests yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map((w, i) => `
+    <tr>
+      <td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#WD${String(i+1).padStart(3,'0')}</td>
+      <td>${w.username || 'User'}</td>
+      <td style="font-family:'Space Mono',monospace;color:var(--accent);">$${w.amount}</td>
+      <td><span class="badge badge-green">${w.network}</span></td>
+      <td style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);">${(w.addr||'').substring(0,12)}...</td>
+      <td style="color:var(--muted);font-size:0.75rem;">${w.date || ''}</td>
+      <td><span class="status-badge status-${w.status}" id="wdStatus-${w.id}">${(w.status||'pending').toUpperCase()}</span></td>
+      <td>
+        <button class="btn-approve" onclick="adminUpdateWithdraw('${w.id}','approved')">✓ Approve</button>
+        <button class="btn-reject"  onclick="adminUpdateWithdraw('${w.id}','rejected')">✕ Reject</button>
+        <button class="btn-paid"    onclick="adminUpdateWithdraw('${w.id}','paid')">✔ Paid</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function adminUpdateWithdraw(docId, newStatus) {
+  try {
+    await db.collection('withdrawals').doc(docId).update({ status: newStatus });
+    const el = document.getElementById('wdStatus-' + docId);
+    if (el) {
+      el.textContent = newStatus.toUpperCase();
+      el.className = 'status-badge status-' + (newStatus === 'approved' ? 'approved' : newStatus === 'paid' ? 'paid' : 'rejected');
+    }
+    showToast('✅ Withdrawal marked as ' + newStatus);
+  } catch(e) { showToast('❌ Error: ' + e.message); }
+}
+window.adminUpdateWithdraw = adminUpdateWithdraw;
+
+function switchAdminTab(name, el) {
+  ['users','withdrawals','gamerecords'].forEach(t => {
+    document.getElementById('adminTab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (name === 'withdrawals') loadAdminData();
+}
+window.switchAdminTab = switchAdminTab;
+
+// Legacy stubs
+function adminAction(id, action) {}
+function adminActionNew(idx, s) {}
+window.adminAction = adminAction;
+window.adminActionNew = adminActionNew;
+function refreshAdminWithdrawals() { loadAdminData(); }
+
+// ===== TABS =====
+function switchTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('active');
+  if (el) { el.classList.add('active'); }
+  else {
+    document.querySelectorAll('.tab').forEach(t => {
+      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + name + "'")) t.classList.add('active');
+    });
+  }
+  updateAllUI();
+}
+window.switchTab = switchTab;
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+window.showToast = showToast;
+
+function copyRef() {
+  navigator.clipboard.writeText(document.getElementById('refLink').value);
+  showToast('✅ Referral link copied!');
+}
+window.copyRef = copyRef;
+
+// ===== FAQ =====
+function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+window.toggleFaq = toggleFaq;
+
+// ===== PRO MODAL =====
+function openProModal() {
+  document.getElementById('proModal').classList.add('open');
+  nowpayShowStep(1);
+}
+window.openProModal = openProModal;
+// closeProModal defined below in NOWPayments section
+
+async function activatePro() {
+  isPro = true;
+  closeProModal();
+  showToast('⚡ PRO activated! Earning 2× faster now!');
+  document.getElementById('proActiveBanner').style.display = 'flex';
+  document.getElementById('navProBtn').textContent = '⚡ PRO ACTIVE';
+  document.getElementById('navProBtn').style.background = 'linear-gradient(135deg,#40c070,#208050)';
+
+  // Save PRO status to Firestore
+  if (currentUser && currentUser.uid) {
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 7);
+    try {
+      await db.collection('users').doc(currentUser.uid).update({
+        isPro: true,
+        proExpiry: expiry,
+        proActivatedAt: serverTimestamp()
+      });
+      currentUser.isPro = true;
+    } catch(e) { console.error('PRO save error:', e); }
+  }
+  updateAllUI();
+}
+window.activatePro = activatePro;
+
+// ===== NOWPAYMENTS =====
+const NP_API_KEY = 'FQ1EZ6P-Q7A4RPE-H4ANSY2-3XM93MV';
+let nowpayPollInterval = null;
+let nowpayTimerInterval = null;
+let nowpayPaymentId = null;
+
+function nowpayShowStep(n) {
+  [1,2,3,4,5].forEach(i => {
+    const el = document.getElementById('nowpayStep' + i);
+    if (el) el.style.display = i === n ? (i===1||i===3?'block':'block') : 'none';
+  });
+}
+
+async function initiateNowPayment() {
+  if (!currentUser || !currentUser.uid) { showToast('❌ Please login first.'); return; }
+  nowpayShowStep(2);
+  try {
+    const orderId = currentUser.uid + '_' + Date.now();
+    const res = await fetch('https://api.nowpayments.io/v1/payment', {
+      method: 'POST',
+      headers: { 'x-api-key': NP_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        price_amount: 6.00,
+        price_currency: 'usd',
+        pay_currency: 'usdterc20',
+        order_id: orderId,
+        order_description: 'Earnova PRO 7 days - ' + (currentUser.username || currentUser.email)
+      })
+    });
+    const data = await res.json();
+    if (!data.payment_id) throw new Error(data.message || 'Failed to create payment');
+
+    nowpayPaymentId = data.payment_id;
+    const addr = data.pay_address;
+    const amt  = data.pay_amount;
+
+    document.getElementById('nowpayAddr').textContent = addr;
+    document.getElementById('nowpayAmount').textContent = amt + ' USDT (ERC20)';
+    window._nowpayAddr = addr;
+
+    // Generate QR code
+    document.getElementById('nowpayQR').innerHTML = '';
+    new QRCode(document.getElementById('nowpayQR'), {
+      text: addr, width: 120, height: 120,
+      colorDark: '#000000', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+
+    nowpayShowStep(3);
+    startNowpayTimer(600); // 10 min countdown
+    startNowpayPoll(data.payment_id);
+  } catch(e) {
+    nowpayShowStep(1);
+    showToast('❌ Payment error: ' + e.message);
+    console.error(e);
+  }
+}
+window.initiateNowPayment = initiateNowPayment;
+
+function copyNowpayAddr() {
+  navigator.clipboard.writeText(window._nowpayAddr || '');
+  showToast('✅ Address copied!');
+}
+window.copyNowpayAddr = copyNowpayAddr;
+
+function startNowpayTimer(seconds) {
+  clearInterval(nowpayTimerInterval);
+  let s = seconds;
+  nowpayTimerInterval = setInterval(() => {
+    s--;
+    const m = Math.floor(s/60), sec = s%60;
+    const el = document.getElementById('nowpayTimer');
+    if (el) el.textContent = m + ':' + String(sec).padStart(2,'0');
+    if (s <= 0) {
+      clearInterval(nowpayTimerInterval);
+      clearInterval(nowpayPollInterval);
+      nowpayShowStep(1);
+      showToast('⏱ Payment expired. Please try again.');
+    }
+  }, 1000);
+}
+
+function startNowpayPoll(paymentId) {
+  clearInterval(nowpayPollInterval);
+  nowpayPollInterval = setInterval(async () => {
+    try {
+      const res = await fetch('https://api.nowpayments.io/v1/payment/' + paymentId, {
+        headers: { 'x-api-key': NP_API_KEY }
+      });
+      const data = await res.json();
+      const status = data.payment_status;
+      if (status === 'confirming' || status === 'sending') {
+        nowpayShowStep(4);
+      }
+      if (status === 'confirmed' || status === 'finished') {
+        clearInterval(nowpayPollInterval);
+        clearInterval(nowpayTimerInterval);
+        nowpayShowStep(5);
+        setTimeout(() => { activatePro(); }, 1800);
+      }
+      if (status === 'failed' || status === 'refunded' || status === 'expired') {
+        clearInterval(nowpayPollInterval);
+        clearInterval(nowpayTimerInterval);
+        nowpayShowStep(1);
+        showToast('❌ Payment ' + status + '. Please try again.');
+      }
+    } catch(e) { console.error('Poll error:', e); }
+  }, 15000); // poll every 15 seconds
+}
+
+function closeProModal() {
+  document.getElementById('proModal').classList.remove('open');
+  clearInterval(nowpayPollInterval);
+  clearInterval(nowpayTimerInterval);
+  nowpayShowStep(1);
+}
+window.closeProModal = closeProModal;
+
+// ===== REFERRAL SIMULATOR =====
+function updateRefSim(val) {
+  const n = parseInt(val);
+  document.getElementById('refCount').textContent = n;
+  document.getElementById('simRefs').textContent = n + ' people';
+  const perRef = n * 1.00;
+  let mile = 0;
+  if (n >= 250) mile = 10 + 100 + 300 + 1000;
+  else if (n >= 100) mile = 10 + 100 + 300;
+  else if (n >= 50)  mile = 10 + 100;
+  else if (n >= 10)  mile = 10;
+  document.getElementById('simPerRef').textContent = '$' + perRef.toFixed(2);
+  document.getElementById('simMile').textContent   = mile > 0 ? '+$' + mile.toFixed(2) : '$0.00';
+  document.getElementById('simNet').textContent    = '$' + (perRef + mile).toFixed(2);
+}
+window.updateRefSim = updateRefSim;
+
+// ===== WITHDRAWAL =====
+function updateWalletHint() {
+  const net = document.getElementById('withdrawNet').value;
+  const hints = {
+    'ETH': 'ETH (ERC20) address starts with 0x... (42 characters, Ethereum network)',
+    'BNB': 'BNB (BEP20) address starts with 0x... (42 characters, Binance Smart Chain)',
+    'TRX': 'TRX (TRC20) address starts with T... (34 characters, TRON network)'
+  };
+  document.getElementById('walletHint').textContent = hints[net] || 'Select a network to see address format hint.';
+}
+window.updateWalletHint = updateWalletHint;
+
+async function submitWithdrawal() {
+  const amt  = parseFloat(document.getElementById('withdrawAmt').value);
+  const net  = document.getElementById('withdrawNet').value;
+  const addr = document.getElementById('withdrawAddr').value.trim();
+  const ptsCash  = ptsToUSD(totalPts);
+  const totalBal = ptsCash + referralCash + milestoneCash;
+
+  if (!amt || isNaN(amt))  { showToast('❌ Please enter a valid amount.'); return; }
+  if (amt < 10)            { showToast('❌ Minimum withdrawal is $10.00'); return; }
+  if (amt > totalBal)      { showToast('❌ Amount exceeds your balance of $' + totalBal.toFixed(2)); return; }
+  if (!net)                { showToast('❌ Please select a network.'); return; }
+  if (!addr || addr.length < 20) { showToast('❌ Please enter a valid wallet address.'); return; }
+  if (net === 'TRX' && !addr.startsWith('T'))         { showToast('❌ TRX addresses must start with "T"'); return; }
+  if ((net === 'ETH' || net === 'BNB') && !addr.startsWith('0x')) { showToast('❌ ' + net + ' addresses must start with "0x"'); return; }
+
+  try {
+    const wData = {
+      userId: currentUser.uid,
+      username: currentUser.username || '',
+      email: currentUser.email,
+      amount: amt.toFixed(2),
+      network: net,
+      addr,
+      status: 'pending',
+      date: new Date().toLocaleDateString(),
+      createdAt: serverTimestamp()
+    };
+    await db.collection('withdrawals').add(wData);
+    withdrawalRequests.push({ ...wData });
+    showToast('✅ Withdrawal request submitted! Processing: 5–14 days.');
+    document.getElementById('withdrawAmt').value  = '';
+    document.getElementById('withdrawAddr').value = '';
+    document.getElementById('withdrawNet').value  = '';
+    updateWithdrawHistory();
+  } catch(e) { showToast('❌ Error submitting: ' + e.message); }
+}
+window.submitWithdrawal = submitWithdrawal;
+
+async function loadWithdrawalHistory() {
+  if (!currentUser || !currentUser.uid) return;
+  try {
+    const snap = await db.collection('withdrawals').where('userId', '==', currentUser.uid).get();
+    withdrawalRequests = [];
+    snap.forEach(d => withdrawalRequests.push({ id: d.id, ...d.data() }));
+    updateWithdrawHistory();
+  } catch(e) {}
+}
+
+function updateWithdrawHistory() {
+  const el = document.getElementById('withdrawHistoryList');
+  if (withdrawalRequests.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div>No withdrawal requests yet.</div>';
+    return;
+  }
+  el.innerHTML = withdrawalRequests.map(w => `
+    <div class="withdraw-item">
+      <div class="withdraw-item-left">
+        <div style="font-weight:700;font-size:0.85rem;">$${w.amount} via ${w.network}</div>
+        <div class="withdraw-item-addr">${(w.addr||'').substring(0,18)}...${(w.addr||'').slice(-6)}</div>
+        <div class="withdraw-item-net">${w.date || ''}</div>
+      </div>
+      <div class="withdraw-item-right">
+        <div class="withdraw-item-amount">$${w.amount}</div>
+        <span class="status-badge status-${w.status}">${(w.status||'pending').toUpperCase()}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== GLOBAL UI =====
+function ptsToUSD(pts) {
+  return isPro ? pts * 0.000002 : pts * 0.000001;
+}
+
+function updateAllUI() {
+  const ptsCash  = ptsToUSD(totalPts);
+  const totalBal = ptsCash + referralCash + milestoneCash;
+  const left     = Math.max(0, 10 - totalBal);
+  document.getElementById('navCoins').textContent = totalPts.toLocaleString();
+  document.getElementById('totalPtsGame').textContent  = totalPts.toLocaleString();
+  document.getElementById('cashValueGame').textContent = '$' + ptsCash.toFixed(4);
+  document.getElementById('modeDisplay').textContent   = isPro ? 'PRO ⚡' : 'FREE';
+  document.getElementById('modeDisplay').style.color   = isPro ? 'var(--pro)' : 'var(--muted)';
+  document.getElementById('rateGame').textContent      = isPro ? '5K pts=$0.01' : '10K pts=$0.01';
+  document.getElementById('walletPts').textContent     = totalPts.toLocaleString();
+  document.getElementById('walletPtsCash').textContent = '= $' + ptsCash.toFixed(4) + (isPro ? ' (PRO rate)' : ' (FREE rate)');
+  document.getElementById('walletRefCash').textContent = '$' + referralCash.toFixed(2);
+  document.getElementById('walletMile').textContent    = '$' + milestoneCash.toFixed(2);
+  document.getElementById('walletTotal').textContent   = '$' + totalBal.toFixed(2);
+  document.getElementById('walletLeft').textContent    = left > 0 ? '$' + left.toFixed(2) + ' more to go' : '✅ Ready to withdraw!';
+}
+
+// ===== GAME ENGINE =====
+document.addEventListener('DOMContentLoaded', function() {
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+let gameState = 'idle';
+let score = 0, lives = 3, combo = 0, multiplier = 1.0;
+let animId;
+let ball = { x:W/2, y:H-60, vx:3.2, vy:-4.2, r:8 };
+let paddle = { x:W/2-50, y:H-22, w:100, h:11 };
+let mouseX = W/2;
+
+canvas.addEventListener('mousemove', e => {
+  const r = canvas.getBoundingClientRect();
+  mouseX = (e.clientX - r.left) * (W / r.width);
+});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  mouseX = (e.touches[0].clientX - r.left) * (W / r.width);
+}, { passive:false });
+
+const COLS=7, ROWS=5;
+const BW=46, BH=17, BPX=8, BPY=6;
+const OX=(W-(COLS*(BW+BPX)-BPX))/2, OY=36;
+const BCOLORS=['#e040a0','#f0c040','#40e0a0','#4080f0','#e06040'];
+let blocks=[];
+
+function initBlocks() {
+  blocks=[];
+  for(let r=0;r<ROWS;r++)
+    for(let c=0;c<COLS;c++)
+      blocks.push({x:OX+c*(BW+BPX),y:OY+r*(BH+BPY),w:BW,h:BH,hp:ROWS-r,maxHp:ROWS-r,color:BCOLORS[r%5],alive:true});
+}
+
+function startGame() {
+  gameState='playing'; score=0; sessionPts=0; lives=3; combo=0; multiplier=1.0;
+  ball={x:W/2,y:H-60,vx:3.2*(Math.random()>0.5?1:-1),vy:-4.2,r:8};
+  paddle.x=W/2-50;
+  initBlocks();
+  document.getElementById('gameOverlay').style.display='none';
+  cancelAnimationFrame(animId);
+  loop();
+  updateGameUI();
+}
+window.startGame = startGame;
+
+function loop(){ update(); draw(); animId=requestAnimationFrame(loop); }
+
+function update() {
+  if(gameState!=='playing') return;
+  paddle.x = Math.max(0, Math.min(W-paddle.w, mouseX-paddle.w/2));
+  ball.x += ball.vx; ball.y += ball.vy;
+  if(ball.x-ball.r<0){ball.x=ball.r;ball.vx*=-1;}
+  if(ball.x+ball.r>W){ball.x=W-ball.r;ball.vx*=-1;}
+  if(ball.y-ball.r<0){ball.y=ball.r;ball.vy*=-1;}
+  if(ball.vy>0&&ball.y+ball.r>=paddle.y&&ball.y+ball.r<=paddle.y+paddle.h+5&&ball.x>=paddle.x&&ball.x<=paddle.x+paddle.w){
+    ball.vy=-Math.abs(ball.vy);
+    ball.vx=((ball.x-(paddle.x+paddle.w/2))/(paddle.w/2))*5.5;
+    combo=0; multiplier=1.0;
+  }
+  if(ball.y-ball.r>H){
+    lives--; combo=0; multiplier=1.0;
+    if(lives<=0){endGame(false);return;}
+    ball={x:W/2,y:H-60,vx:3.2*(Math.random()>0.5?1:-1),vy:-4.2,r:8};
+    updateGameUI();
+  }
+  for(let b of blocks){
+    if(!b.alive) continue;
+    if(ball.x+ball.r>b.x&&ball.x-ball.r<b.x+b.w&&ball.y+ball.r>b.y&&ball.y-ball.r<b.y+b.h){
+      ball.vy*=-1;
+      b.hp--; combo++; multiplier=Math.min(3.0,1.0+combo*0.1);
+      const earned=Math.max(1,Math.round(multiplier));
+      score++;
+      if(b.hp<=0) b.alive=false;
+      sessionPts+=earned; totalPts+=earned;
+      updateGameUI(); break;
+    }
+  }
+  if(blocks.every(b=>!b.alive)) endGame(true);
+}
+
+async function endGame(won) {
+  gameState='over'; cancelAnimationFrame(animId);
+  const overlay = document.getElementById('gameOverlay');
+  overlay.style.display='flex';
+  overlay.querySelector('.game-overlay-title').textContent = won?'🏆 You Win!':'💀 Game Over';
+  document.getElementById('overlaySub').textContent =
+    `+${sessionPts} pts · ${isPro?'PRO: 5,000pts=$0.01':'FREE: 10,000pts=$0.01'}`;
+
+  // Save points to Firestore
+  if (currentUser && currentUser.uid && sessionPts > 0) {
+    try {
+      await db.collection('users').doc(currentUser.uid).update({ totalPts });
+      await db.collection('game_records').add({
+        userId: currentUser.uid,
+        username: currentUser.username || '',
+        score, sessionPts, isPro,
+        createdAt: serverTimestamp()
+      });
+    } catch(e) { console.error('Save game error:', e); }
+  }
+  updateAllUI();
+}
+
+function draw() {
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0d0d18'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,0.018)'; ctx.lineWidth=1;
+  for(let i=0;i<W;i+=30){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();}
+  for(let i=0;i<H;i+=30){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke();}
+  for(let b of blocks){
+    if(!b.alive) continue;
+    ctx.globalAlpha=0.42+0.58*(b.hp/b.maxHp);
+    ctx.fillStyle=b.color;
+    ctx.beginPath(); ctx.roundRect(b.x,b.y,b.w,b.h,4); ctx.fill();
+    ctx.globalAlpha=0.28; ctx.strokeStyle='#fff'; ctx.lineWidth=0.5; ctx.stroke();
+    ctx.globalAlpha=1;
+    for(let h=0;h<b.hp;h++){
+      ctx.fillStyle='rgba(255,255,255,0.55)';
+      ctx.beginPath(); ctx.arc(b.x+6+h*6,b.y+b.h/2,1.7,0,Math.PI*2); ctx.fill();
+    }
+  }
+  const pg=ctx.createLinearGradient(paddle.x,paddle.y,paddle.x,paddle.y+paddle.h);
+  if(isPro){pg.addColorStop(0,'#c080ff');pg.addColorStop(1,'#7030cc');}
+  else{pg.addColorStop(0,'#f0c040');pg.addColorStop(1,'#c09000');}
+  ctx.fillStyle=pg; ctx.beginPath(); ctx.roundRect(paddle.x,paddle.y,paddle.w,paddle.h,5); ctx.fill();
+  const bg=ctx.createRadialGradient(ball.x-2,ball.y-2,1,ball.x,ball.y,ball.r);
+  bg.addColorStop(0,'#ffffff'); bg.addColorStop(1,isPro?'#c080ff':'#40e0a0');
+  ctx.fillStyle=bg;
+  ctx.shadowColor=isPro?'#a060ff':'#40e0a0'; ctx.shadowBlur=14;
+  ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+  if(combo>3){
+    ctx.fillStyle=`rgba(240,192,64,${Math.min(0.75,combo*0.05)})`;
+    ctx.font=`bold ${12+Math.min(combo,8)}px 'Space Mono'`;
+    ctx.fillText(`×${multiplier.toFixed(1)} COMBO!`,W/2-52,20);
+  }
+}
+
+function updateGameUI() {
+  document.getElementById('scoreDisplay').textContent=score.toLocaleString();
+  document.getElementById('ptsDisplay').textContent='+'+sessionPts;
+  document.getElementById('multDisplay').textContent='×'+multiplier.toFixed(1);
+  document.getElementById('livesDisplay').textContent='❤️'.repeat(lives)+'🖤'.repeat(Math.max(0,3-lives));
+  const mp=Math.round(((multiplier-1)/2)*100);
+  document.getElementById('multFill').style.width=mp+'%';
+  document.getElementById('multPct').textContent=mp+'%';
+  document.getElementById('levelBadge').textContent='LEVEL '+(Math.floor(combo/5)+1);
+  updateAllUI();
+}
+
+function showPage(name) { closeUserMenu && closeUserMenu(); }
+window.showPage = showPage;
+
+}); // end DOMContentLoaded
+
+</script>
+</body>
+</html>
