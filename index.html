@@ -1105,7 +1105,13 @@ window.doRegister = doRegister;
 function loginSuccess(email, user) {
   currentUser = { email, ...user };
   document.getElementById('authScreen').style.display = 'none';
+if (user.role === 'admin') {
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+  loadAdminData();
+} else {
   document.getElementById('mainApp').style.display = 'block';
+}
   document.getElementById('navUsername').textContent = user.username || 'User';
   document.getElementById('umName').textContent = user.username || 'User';
   document.getElementById('umEmail').textContent = email;
