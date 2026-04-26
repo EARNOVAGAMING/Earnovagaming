@@ -2273,6 +2273,32 @@ function draw() {
   ctx.shadowColor=isPro?'#a060ff':'#40e0a0'; ctx.shadowBlur=14;
   ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0;
+  // Draw particles
+  particles.forEach((p,i)=>{
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.alpha-=0.03;
+    p.life=p.alpha;
+    ctx.globalAlpha=Math.max(0,p.alpha);
+    ctx.fillStyle=p.color;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fill();
+  });
+  particles=particles.filter(p=>p.alpha>0);
+
+  // Draw score popups
+  scorePopups.forEach(p=>{
+    p.y+=p.vy; p.alpha-=0.025;
+    ctx.globalAlpha=Math.max(0,p.alpha);
+    ctx.fillStyle='#f0f0ff';
+    ctx.font="bold 11px 'Space Mono'";
+    ctx.fillText(p.val,p.x,p.y);
+  });
+  scorePopups=scorePopups.filter(p=>p.alpha>0);
+  ctx.globalAlpha=1;
+
+  // Restore shake transform
+  ctx.restore();
+
   if(combo>3){
     ctx.fillStyle=`rgba(240,192,64,${Math.min(0.75,combo*0.05)})`;
     ctx.font=`bold ${12+Math.min(combo,8)}px 'Space Mono'`;
