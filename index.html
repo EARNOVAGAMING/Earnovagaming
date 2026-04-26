@@ -369,6 +369,13 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
 .cookie-btn-accept{background:var(--accent);color:#0a0a0f;border:none;border-radius:7px;padding:8px 18px;font-family:'Bai Jamjuree',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;white-space:nowrap;}
 .cookie-btn-decline{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:7px;padding:8px 14px;font-family:'Bai Jamjuree',sans-serif;font-weight:600;font-size:0.78rem;cursor:pointer;white-space:nowrap;}
 @media(max-width:600px){#cookieBanner{flex-direction:column;align-items:flex-start;}}
+#suspendedScreen{position:fixed;inset:0;background:var(--bg);z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;}
+.suspended-box{background:var(--card);border:1px solid rgba(255,64,96,0.4);border-radius:20px;padding:40px 32px;max-width:440px;width:100%;text-align:center;}
+.suspended-icon{font-size:3.5rem;margin-bottom:16px;}
+.suspended-title{font-size:1.5rem;font-weight:700;color:var(--danger);margin-bottom:8px;}
+.suspended-sub{font-size:0.84rem;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.suspended-reason{background:rgba(255,64,96,0.07);border:1px solid rgba(255,64,96,0.2);border-radius:10px;padding:14px;margin-bottom:20px;font-size:0.79rem;color:var(--text);line-height:1.6;}
+.suspended-reason-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--danger);margin-bottom:6px;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -381,6 +388,22 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
   <div style="display:flex;gap:8px;flex-shrink:0;">
     <button class="cookie-btn-decline" onclick="declineCookies()">Decline</button>
     <button class="cookie-btn-accept" onclick="acceptCookies()">Accept All</button>
+  </div>
+</div>
+
+  <!-- ===== SUSPENDED SCREEN ===== -->
+<div id="suspendedScreen">
+  <div class="suspended-box">
+    <div class="suspended-icon">🔒</div>
+    <div class="suspended-title">Account Suspended</div>
+    <div class="suspended-sub">Your Earnova account has been suspended due to a violation of our Terms of Service. All accumulated earnings have been forfeited.</div>
+    <div class="suspended-reason">
+      <div class="suspended-reason-label">Reason</div>
+      <span id="suspendedReason">Suspicious activity or Terms of Service violation detected.</span>
+    </div>
+    <div style="font-size:0.76rem;color:var(--muted);line-height:1.7;">
+      To appeal, email us at <strong style="color:var(--accent);">earnova@zohomail.com</strong> with your account email. Appeals take 5–7 business days.
+    </div>
   </div>
 </div>
   
@@ -481,6 +504,13 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
 
 <!-- ===== MAIN APP ===== -->
 <div id="mainApp">
+
+<!-- ===== EMAIL VERIFY BANNER ===== -->
+<div id="verifyBanner" style="display:none;background:rgba(240,192,64,0.08);border-bottom:1px solid rgba(240,192,64,0.25);padding:11px 18px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <div style="font-size:0.79rem;color:var(--text);">📧 <strong style="color:var(--accent);">Verify your email</strong> — Check your inbox for a verification link to unlock all features.</div>
+  <button onclick="resendVerification()" style="background:var(--accent);color:#0a0a0f;border:none;border-radius:7px;padding:7px 14px;font-family:'Bai Jamjuree',sans-serif;font-weight:700;font-size:0.75rem;cursor:pointer;white-space:nowrap;">Resend Email</button>
+</div>
+
   <nav>
     <div class="logo" onclick="switchTab('game',null)">Earn<span>ova</span></div>
     <div class="nav-right">
@@ -1225,6 +1255,7 @@ auth.onAuthStateChanged(async (user) => {
             await db.collection('users').doc(user.uid).update({ isPro: false });
           }
         }
+        if(data.suspended){await auth.signOut();showSuspendedScreen(data.suspendedReason);return;}
         currentUser = { email: user.email, uid: user.uid, ...data, isPro: proActive };
         isPro = proActive;
         totalPts = data.totalPts || 0;
@@ -1238,7 +1269,27 @@ auth.onAuthStateChanged(async (user) => {
 
 // ===== AUTH =====
 // ===== AUTO FILL REFERRAL + AUTH ANIMATION + GUEST MODE =====
-window.addEventListener('DOMContentLoaded', function() {
+// ===== COOKIE CONSENT =====
+function acceptCookies(){localStorage.setItem('earnova_cookies','accepted');document.getElementById('cookieBanner').classList.remove('show');}
+function declineCookies(){localStorage.setItem('earnova_cookies','declined');document.getElementById('cookieBanner').classList.remove('show');}
+window.acceptCookies=acceptCookies;
+window.declineCookies=declineCookies;
+
+// ===== SUSPENDED =====
+function showSuspendedScreen(reason){
+  document.getElementById('suspendedReason').textContent=reason||'Terms of Service violation detected.';
+  document.getElementById('suspendedScreen').style.display='flex';
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('mainApp').style.display='none';
+}
+
+// ===== EMAIL VERIFY =====
+async function resendVerification(){
+  try{const u=auth.currentUser;if(u&&!u.emailVerified){await u.sendEmailVerification();showToast('✅ Verification email sent!');}}
+  catch(e){showToast('❌ '+e.message);}
+}
+window.resendVerification=resendVerification;
+  window.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
   const refCode = urlParams.get('ref');
   if (refCode) {
@@ -1248,6 +1299,9 @@ window.addEventListener('DOMContentLoaded', function() {
     if (regTab) switchAuthTab('register', regTab);
   }
   startAuthAnimation();
+  if(!localStorage.getItem('earnova_cookies')){
+    setTimeout(()=>document.getElementById('cookieBanner').classList.add('show'),1500);
+  }
 });
 
 function startAuthAnimation() {
@@ -1447,6 +1501,7 @@ async function doLogin() {
       if (data.isPro && data.proExpiry) {
         proActive = data.proExpiry.toDate() > new Date();
       }
+      if(data.suspended){await auth.signOut();showSuspendedScreen(data.suspendedReason);return;}
       currentUser = { email, uid: cred.user.uid, ...data, isPro: proActive };
       isPro = proActive;
       totalPts = data.totalPts || 0;
