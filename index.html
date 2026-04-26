@@ -1577,6 +1577,10 @@ document.getElementById('mainApp').style.display = 'block';
   }
   updateAllUI();
   loadWithdrawalHistory();
+  const fbUser=auth.currentUser;
+  if(fbUser&&!fbUser.emailVerified&&currentUser.role!=='admin'){
+    document.getElementById('verifyBanner').style.display='flex';
+  }
   const canvas = document.getElementById('gameCanvas');
   const ctx2 = canvas.getContext('2d');
   ctx2.fillStyle = '#0d0d18';
