@@ -2071,13 +2071,21 @@ const COLS=7, ROWS=5;
 const BW=46, BH=17, BPX=8, BPY=6;
 const OX=(W-(COLS*(BW+BPX)-BPX))/2, OY=36;
 const BCOLORS=['#e040a0','#f0c040','#40e0a0','#4080f0','#e06040'];
+const BPOINTS=[5,4,3,2,1]; // top row = 5pts, bottom = 1pt
+let particles=[];
+let scorePopups=[];
+let trailPositions=[];
+let shakeFrames=0;
+let shakeIntensity=0;
+let paddleSquish=1.0;
+let streakCount=0;
 let blocks=[];
 
 function initBlocks() {
   blocks=[];
   for(let r=0;r<ROWS;r++)
     for(let c=0;c<COLS;c++)
-      blocks.push({x:OX+c*(BW+BPX),y:OY+r*(BH+BPY),w:BW,h:BH,hp:ROWS-r,maxHp:ROWS-r,color:BCOLORS[r%5],alive:true});
+      blocks.push({x:OX+c*(BW+BPX),y:OY+r*(BH+BPY),w:BW,h:BH,hp:ROWS-r,maxHp:ROWS-r,color:BCOLORS[r%5],pts:BPOINTS[r],alive:true});
 }
 
 function startGame() {
@@ -2088,8 +2096,10 @@ function startGame() {
   } catch(e) {}
   gameState='playing'; score=0; sessionPts=0; lives=3; combo=0; multiplier=1.0;
   ball={x:W/2,y:H-60,vx:3.2*(Math.random()>0.5?1:-1),vy:-4.2,r:8};
-  paddle.x=W/2-50;
-  initBlocks();
+paddle.x=W/2-50;
+particles=[];scorePopups=[];trailPositions=[];
+shakeFrames=0;streakCount=0;paddleSquish=1.0;
+initBlocks();
   document.getElementById('gameOverlay').style.display='none';
   cancelAnimationFrame(animId);
   loop();
@@ -2110,6 +2120,8 @@ function update() {
     ball.vy=-Math.abs(ball.vy);
     ball.vx=((ball.x-(paddle.x+paddle.w/2))/(paddle.w/2))*5.5;
     combo=0; multiplier=1.0;
+    streakCount=0;
+    paddleSquish=0.6;
     playPaddleHit();
   }
   if(ball.y-ball.r>H){
