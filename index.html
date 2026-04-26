@@ -351,6 +351,54 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
 .warn-banner strong{color:var(--accent);}
 .empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:0.84rem;}
 .empty-state-icon{font-size:2.2rem;margin-bottom:12px;}
+  /* ===== TOKEN PAGE ===== */
+.token-hero{background:linear-gradient(135deg,#0a0020,#150030,#0a0020);border:1px solid rgba(160,96,255,0.3);border-radius:16px;padding:40px 24px;margin-bottom:22px;text-align:center;position:relative;overflow:hidden;}
+.token-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(160,96,255,0.15) 1px,transparent 1px);background-size:30px 30px;pointer-events:none;}
+.token-hero-title{font-size:2rem;font-weight:700;margin-bottom:10px;background:linear-gradient(135deg,#a060ff,#f0c040,#40e0a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;}
+.token-hero-sub{font-size:0.88rem;color:rgba(240,240,255,0.65);line-height:1.8;max-width:480px;margin:0 auto 20px;position:relative;}
+.token-hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;}
+.token-hero-pill{background:rgba(160,96,255,0.12);border:1px solid rgba(160,96,255,0.3);border-radius:100px;padding:8px 18px;font-size:0.74rem;color:var(--pro);font-family:'Space Mono',monospace;}
+.roadmap{display:flex;gap:0;margin-bottom:24px;overflow-x:auto;padding-bottom:8px;}
+.roadmap-phase{flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);padding:16px 12px;text-align:center;position:relative;}
+.roadmap-phase:first-child{border-radius:12px 0 0 12px;}
+.roadmap-phase:last-child{border-radius:0 12px 12px 0;}
+.roadmap-phase.active{background:rgba(160,96,255,0.1);border-color:var(--pro);}
+.roadmap-phase.done{background:rgba(64,224,160,0.07);border-color:rgba(64,224,160,0.3);}
+.roadmap-icon{font-size:1.4rem;margin-bottom:6px;}
+.roadmap-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px;}
+.roadmap-title{font-size:0.78rem;font-weight:700;margin-bottom:4px;}
+.roadmap-status{font-size:0.62rem;padding:2px 8px;border-radius:20px;display:inline-block;font-weight:700;}
+.status-done{background:rgba(64,224,160,0.15);color:var(--accent2);}
+.status-active{background:rgba(160,96,255,0.2);color:var(--pro);}
+.status-soon{background:rgba(240,192,64,0.12);color:var(--accent);}
+.points-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:22px;}
+.flow-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;}
+.flow-card.highlight{border-color:var(--pro);background:rgba(160,96,255,0.07);}
+.flow-icon{font-size:1.8rem;margin-bottom:8px;}
+.flow-title{font-weight:700;font-size:0.86rem;margin-bottom:4px;}
+.flow-desc{font-size:0.73rem;color:var(--muted);line-height:1.6;}
+.utility-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:22px;}
+.utility-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;}
+.utility-card::before{content:'';position:absolute;top:-20px;right:-20px;width:60px;height:60px;border-radius:50%;background:var(--pro);opacity:0.07;}
+.utility-card-icon{font-size:1.4rem;margin-bottom:8px;}
+.utility-card-title{font-weight:700;font-size:0.86rem;margin-bottom:5px;color:var(--pro);}
+.utility-card-desc{font-size:0.74rem;color:var(--muted);line-height:1.6;}
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:22px;}
+.tier-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.tier-card.active-tier{border-color:var(--pro);background:rgba(160,96,255,0.08);}
+.tier-icon{font-size:1.6rem;margin-bottom:6px;}
+.tier-name{font-weight:700;font-size:0.82rem;margin-bottom:4px;}
+.tier-users{font-size:0.68rem;color:var(--muted);margin-bottom:6px;}
+.tier-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.62rem;font-weight:700;}
+.tier-badge.bronze{background:rgba(180,100,40,0.2);color:#cd7f32;}
+.tier-badge.silver{background:rgba(180,180,180,0.2);color:#c0c0c0;}
+.tier-badge.gold{background:rgba(240,192,64,0.2);color:var(--accent);}
+.tier-badge.diamond{background:rgba(160,96,255,0.2);color:var(--pro);}
+.token-cta{background:linear-gradient(135deg,rgba(160,96,255,0.15),rgba(64,224,160,0.08));border:1px solid var(--pro);border-radius:16px;padding:28px 24px;text-align:center;margin-bottom:18px;}
+.token-cta-title{font-size:1.3rem;font-weight:700;margin-bottom:8px;}
+.token-cta-sub{font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+.token-cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.token-disclaimer{background:rgba(255,64,96,0.04);border:1px solid rgba(255,64,96,0.2);border-radius:10px;padding:14px 16px;font-size:0.74rem;color:var(--muted);line-height:1.7;margin-bottom:16px;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -473,7 +521,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
     <div class="tab"         onclick="switchTab('about',this)">ℹ️ About</div>
     <div class="tab"         onclick="switchTab('contact',this)">📬 Contact</div>
     <div class="tab"         onclick="switchTab('policy',this)">📋 Policy</div>
-    <div class="tab"         onclick="switchTab('disclaimer',this)">⚖️ Disclaimer</div>
+    <div class="tab"         onclick="switchTab('token',this)">🪙 Token</div>
   </div>
 
   <!-- ===== GAME PANEL ===== -->
@@ -834,6 +882,187 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
       <p class="policy-text">This policy may be updated at any time. Continued use of Earnova constitutes acceptance of the current policy. Last updated: April 2026.</p>
     </div>
   </div>
+  <!-- ===== TOKEN PAGE ===== -->
+<div class="panel" id="panel-token">
+
+  <!-- Hero -->
+  <div class="token-hero">
+    <div class="token-hero-title">🚀 The Future of Earnova</div>
+    <div class="token-hero-sub">Something big is coming. Early users who join now will be first in line when our platform token launches. Every point you earn today could matter tomorrow.</div>
+    <div class="token-hero-pills">
+      <div class="token-hero-pill">🎮 Points → Token</div>
+      <div class="token-hero-pill">💎 Early User Airdrop</div>
+      <div class="token-hero-pill">⚡ Pay PRO with Token</div>
+      <div class="token-hero-pill">🌍 Global Exchange</div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="section-title">Platform Roadmap</div>
+  <div class="roadmap">
+    <div class="roadmap-phase done">
+      <div class="roadmap-icon">🎮</div>
+      <div class="roadmap-label">Phase 1</div>
+      <div class="roadmap-title">Platform Launch</div>
+      <div class="roadmap-status status-done">✅ Done</div>
+    </div>
+    <div class="roadmap-phase active">
+      <div class="roadmap-icon">👥</div>
+      <div class="roadmap-label">Phase 2</div>
+      <div class="roadmap-title">Growing Community</div>
+      <div class="roadmap-status status-active">🔄 Now</div>
+    </div>
+    <div class="roadmap-phase">
+      <div class="roadmap-icon">🪙</div>
+      <div class="roadmap-label">Phase 3</div>
+      <div class="roadmap-title">Token Development</div>
+      <div class="roadmap-status status-soon">⏳ Soon</div>
+    </div>
+    <div class="roadmap-phase">
+      <div class="roadmap-icon">🚀</div>
+      <div class="roadmap-label">Phase 4</div>
+      <div class="roadmap-title">Token Launch</div>
+      <div class="roadmap-status status-soon">⏳ Soon</div>
+    </div>
+    <div class="roadmap-phase">
+      <div class="roadmap-icon">📈</div>
+      <div class="roadmap-label">Phase 5</div>
+      <div class="roadmap-title">Exchange Listing</div>
+      <div class="roadmap-status status-soon">⏳ Soon</div>
+    </div>
+  </div>
+
+  <!-- Points Flow -->
+  <div class="section-title">Your Points — Your Future</div>
+  <div class="points-flow">
+    <div class="flow-card">
+      <div class="flow-icon">🎮</div>
+      <div class="flow-title">Play & Earn Points</div>
+      <div class="flow-desc">Every block you break earns points. Keep stacking — these points will matter when token launches.</div>
+    </div>
+    <div class="flow-card highlight">
+      <div class="flow-icon">🔄</div>
+      <div class="flow-title">Convert to Token</div>
+      <div class="flow-desc">When token launches, your accumulated points may be converted to our platform token at a set rate.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-icon">💸</div>
+      <div class="flow-title">Withdraw as Crypto</div>
+      <div class="flow-desc">Keep withdrawing as USDT anytime. Or hold your points and convert to token later — your choice!</div>
+    </div>
+    <div class="flow-card highlight">
+      <div class="flow-icon">📈</div>
+      <div class="flow-title">Hold & Benefit</div>
+      <div class="flow-desc">Early holders get platform benefits, staking rewards, and discounted PRO rates using the token.</div>
+    </div>
+  </div>
+
+  <!-- Token Utility -->
+  <div class="section-title">Token Utility — What You Can Do</div>
+  <div class="utility-grid">
+    <div class="utility-card">
+      <div class="utility-card-icon">💳</div>
+      <div class="utility-card-title">Pay for PRO</div>
+      <div class="utility-card-desc">Use the Earnova token to pay for PRO subscription. Token holders get discounted rates.</div>
+    </div>
+    <div class="utility-card">
+      <div class="utility-card-icon">💸</div>
+      <div class="utility-card-title">Withdraw as Token</div>
+      <div class="utility-card-desc">Choose to receive your earnings in our token instead of USDT. More flexibility for you.</div>
+    </div>
+    <div class="utility-card">
+      <div class="utility-card-icon">🎮</div>
+      <div class="utility-card-title">Convert Points</div>
+      <div class="utility-card-desc">Your game points can be converted directly to tokens. Every point you earn today counts.</div>
+    </div>
+    <div class="utility-card">
+      <div class="utility-card-icon">📈</div>
+      <div class="utility-card-title">Stake for Rewards</div>
+      <div class="utility-card-desc">Stake your tokens inside the platform to earn bonus multipliers and extra rewards.</div>
+    </div>
+    <div class="utility-card">
+      <div class="utility-card-icon">👥</div>
+      <div class="utility-card-title">Referral Bonus</div>
+      <div class="utility-card-desc">Referral bonuses can be claimed in token. Early referrers get special allocation bonuses.</div>
+    </div>
+    <div class="utility-card">
+      <div class="utility-card-icon">🏆</div>
+      <div class="utility-card-title">Governance</div>
+      <div class="utility-card-desc">Token holders get a voice in platform decisions. The community shapes Earnova's future.</div>
+    </div>
+  </div>
+
+  <!-- Early User Tiers -->
+  <div class="section-title">Early User Tiers — Join Now</div>
+  <div class="tier-grid">
+    <div class="tier-card active-tier">
+      <div class="tier-icon">🥉</div>
+      <div class="tier-name">Bronze</div>
+      <div class="tier-users">First 100 users</div>
+      <div class="tier-badge bronze">EARLY ACCESS</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-icon">🥈</div>
+      <div class="tier-name">Silver</div>
+      <div class="tier-users">First 500 users</div>
+      <div class="tier-badge silver">PRIORITY</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-icon">🥇</div>
+      <div class="tier-name">Gold</div>
+      <div class="tier-users">First 1,000 users</div>
+      <div class="tier-badge gold">STANDARD</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-icon">💎</div>
+      <div class="tier-name">Diamond</div>
+      <div class="tier-users">5,000+ users</div>
+      <div class="tier-badge diamond">LATE</div>
+    </div>
+  </div>
+  <div class="info-banner">🎯 <strong>You are currently in the BRONZE tier</strong> — the earliest and most rewarded group. The earlier you join and the more points you stack, the better your token allocation when we launch.</div>
+
+  <!-- FAQ -->
+  <div class="section-title">Token FAQ</div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">When is the token launching? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">We are currently in Phase 2 — growing our community. Token development begins in Phase 3. No exact date yet, but early users will be notified first via our official channels.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How many points = 1 token? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">The exact conversion rate will be announced at token launch. Early users (Bronze tier) will receive more favorable rates than later users. Keep earning points now to maximize your allocation.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I still withdraw as USDT after token launches? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Yes! You will always have the choice — withdraw as USDT/crypto OR convert to our token. We will never force you to take the token. It's your earnings, your choice.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is the token guaranteed? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">This is in planning stages. No guarantees on token value, timeline, or exchange listing. We are building honestly and will only launch when the platform is ready. Your USDT withdrawals are always available regardless.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Will the token be listed on exchanges? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Phase 5 of our roadmap includes exchange listing. We aim to list on DEX platforms first, then explore CEX listings as the community grows. No guarantees on specific exchanges at this time.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="token-cta">
+    <div class="token-cta-title">🚀 Secure Your Early User Status</div>
+    <div class="token-cta-sub">You're already early. Keep playing, keep earning points, refer friends — every action you take now builds your position for when the token launches. Don't wait.</div>
+    <div class="token-cta-btns">
+      <button class="btn btn-pro" onclick="switchTab('game',null)">🎮 Start Earning Points</button>
+      <button class="btn btn-outline" onclick="switchTab('referral',null)">👥 Refer & Earn More</button>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="token-disclaimer">
+    ⚠️ <strong>Important Disclaimer:</strong> The Earnova platform token is in early planning stages. Nothing on this page constitutes financial advice or investment advice. No guarantees are made on token value, launch date, or exchange listing. Your current USDT withdrawal system remains fully operational regardless of token plans. Always do your own research before making any financial decisions.
+  </div>
+
+</div>
 
   <!-- ===== DISCLAIMER ===== -->
   <div class="panel" id="panel-disclaimer">
@@ -1378,7 +1607,7 @@ if (user.role === 'admin') {
   document.getElementById('umName').textContent = user.username || 'User';
   document.getElementById('umEmail').textContent = email;
   const refName = (user.username || 'USER').toUpperCase().replace(/\s/g,'');
-  document.getElementById('refLink').value = 'earnovagaming.netlify.app/join?ref=' + refName;
+  document.getElementById('refLink').value = 'earnovagaming.online/?ref=' + refName;
   if (user.role === 'admin') {
     document.getElementById('navAdminBtn').style.display = 'block';
   }
