@@ -2250,7 +2250,10 @@ function draw() {
   const pg=ctx.createLinearGradient(paddle.x,paddle.y,paddle.x,paddle.y+paddle.h);
   if(isPro){pg.addColorStop(0,'#c080ff');pg.addColorStop(1,'#7030cc');}
   else{pg.addColorStop(0,'#f0c040');pg.addColorStop(1,'#c09000');}
-  ctx.fillStyle=pg; ctx.beginPath(); ctx.roundRect(paddle.x,paddle.y,paddle.w,paddle.h,5); ctx.fill();
+  const squishH = paddle.h * paddleSquish;
+  const squishW = paddle.w * (2 - paddleSquish);
+  const squishX = paddle.x - (squishW - paddle.w)/2;
+  ctx.fillStyle=pg; ctx.beginPath(); ctx.roundRect(squishX,paddle.y,squishW,squishH,5); ctx.fill();
   // Ball trail
   trailPositions.push({x:ball.x,y:ball.y});
   if(trailPositions.length>10) trailPositions.shift();
