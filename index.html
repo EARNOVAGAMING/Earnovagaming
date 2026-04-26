@@ -505,8 +505,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
     <div class="logo" onclick="switchTab('game',null)">Earn<span>ova</span></div>
     <div class="nav-right">
       <div class="nav-pill">🪙 <span id="navCoins">0</span></div>
-      <button class="pro-badge-btn" onclick="openProModal()" id="navProBtn">⚡ GO PRO</button>
-      <button class="nav-admin-btn" id="navAdminBtn" onclick="openAdminPanel()">🔐 ADMIN</button>
+      <button class="pro-badge-btn" onclick="openProModal()" id="navProBtn">⚡ GO PRO</button>      
       <button id="soundToggleBtn" onclick="toggleSound()" style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.9rem;color:var(--text);">🔊</button>
       <div class="nav-user" id="navUser" onclick="openUserMenu()">👤 <span id="navUsername">User</span> ▾</div>
     </div>
@@ -1116,87 +1115,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:7px 0;}
     </div>
   </div>
 </div>
-
-<!-- ===== ADMIN PANEL ===== -->
-<div id="adminPanel">
-  <div class="admin-nav">
-    <div class="admin-logo">🔐 Earn<span>ova</span> Admin</div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <span style="font-size:0.72rem;color:var(--muted);">Logged in as <strong style="color:var(--danger);">admin</strong></span>
-      <button class="btn btn-outline btn-sm" onclick="closeAdminPanel()">← Back to App</button>
-    </div>
-  </div>
-  <div class="admin-content">
-    <div class="admin-grid">
-      <div class="admin-stat"><div class="admin-stat-label">Total Users</div><div class="admin-stat-val gold" id="adminTotalUsers">4</div></div>
-      <div class="admin-stat"><div class="admin-stat-label">PRO Subscribers</div><div class="admin-stat-val green" id="adminProUsers">2</div></div>
-      <div class="admin-stat red"><div class="admin-stat-label">Pending Withdrawals</div><div class="admin-stat-val danger" id="adminPendingWithdraw">1</div></div>
-      <div class="admin-stat"><div class="admin-stat-label">Total Paid Out</div><div class="admin-stat-val gold" id="adminPaidOut">$15.00</div></div>
-    </div>
-    <div class="admin-tabs">
-      <button class="admin-tab-btn active" onclick="switchAdminTab('users',this)">👤 Users</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('withdrawals',this)">💸 Withdrawals</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('gamerecords',this)">🎮 Game Records</button>
-    </div>
-
-    <!-- Users Tab -->
-    <div id="adminTab-users" class="admin-section">
-      <div class="admin-section-title">All Users</div>
-      <div style="overflow-x:auto;">
-        <table class="admin-table">
-          <thead><tr><th>User ID</th><th>Username</th><th>Email</th><th>Role</th><th>Balance</th><th>Total Earned</th><th>Joined</th></tr></thead>
-          <tbody id="adminUsersTable">
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#001</td><td>DemoUser</td><td>user@demo.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$3.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$3.00</td><td style="color:var(--muted);font-size:0.75rem;">Today</td></tr>
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#002</td><td>Wei_L</td><td>wei@example.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--muted);font-size:0.75rem;">Today</td></tr>
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#003</td><td>Amir_S</td><td>amir@example.com</td><td><span class="status-badge status-approved">user</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">$0.00</td><td style="color:var(--muted);font-size:0.75rem;">Yesterday</td></tr>
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#ADM</td><td>Admin</td><td>admin@earnova.com</td><td><span class="status-badge status-rejected">admin</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace;">—</td><td style="color:var(--accent2);font-family:'Space Mono',monospace;">—</td><td style="color:var(--muted);font-size:0.75rem;">Platform owner</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Withdrawals Tab -->
-    <div id="adminTab-withdrawals" class="admin-section" style="display:none;">
-      <div class="admin-section-title">Withdrawal Requests</div>
-      <div style="overflow-x:auto;">
-        <table class="admin-table">
-          <thead><tr><th>Request ID</th><th>User</th><th>Amount</th><th>Network</th><th>Wallet Address</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="adminWithdrawTable">
-            <tr>
-              <td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#WD001</td>
-              <td>DemoUser</td>
-              <td style="font-family:'Space Mono',monospace;color:var(--accent);">$10.00</td>
-              <td><span class="badge badge-green">TRC20</span></td>
-              <td style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);">TXxample...abc</td>
-              <td style="color:var(--muted);font-size:0.75rem;">Today</td>
-              <td><span class="status-badge status-pending" id="wdStatus-WD001">PENDING</span></td>
-              <td>
-                <button class="btn-approve" onclick="adminAction('WD001','approve')">✓ Approve</button>
-                <button class="btn-reject" onclick="adminAction('WD001','reject')">✕ Reject</button>
-                <button class="btn-paid" onclick="adminAction('WD001','paid')">✔ Mark Paid</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div id="adminWithdrawEmpty" class="empty-state" style="display:none;"><div class="empty-state-icon">✅</div>No pending withdrawal requests.</div>
-    </div>
-
-    <!-- Game Records Tab -->
-    <div id="adminTab-gamerecords" class="admin-section" style="display:none;">
-      <div class="admin-section-title">Recent Game Records</div>
-      <div style="overflow-x:auto;">
-        <table class="admin-table">
-          <thead><tr><th>Record ID</th><th>User</th><th>Score (blocks)</th><th>Points Earned</th><th>Mode</th><th>Timestamp</th></tr></thead>
-          <tbody id="adminGameTable">
-            <tr><td style="font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);">#GR001</td><td>DemoUser</td><td style="color:var(--accent2);">240</td><td style="color:var(--accent);font-family:'Space Mono',monospace;">2,400 pts</td><td><span class="badge badge-yellow">FREE</span></td><td style="color:var(--muted);font-size:0.75rem;">Today, 2:10 PM</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
+  
 <!-- PRO MODAL -->
 <div class="modal-backdrop" id="proModal">
   <div class="modal">
@@ -1533,13 +1452,6 @@ async function doLogin() {
   const pass  = document.getElementById('loginPassword').value;
   if (!email || !pass) { showAuthError('Please enter email and password.'); return; }
 
-  // Admin shortcut — bypasses Firebase entirely
-  if (email === 'admin@earnova.com' && pass === 'admin2024!') {
-    currentUser = { email, uid: 'admin', role: 'admin', username: 'Admin', balance: 0, total_earned: 0 };
-    loginSuccess(email, currentUser);
-    return;
-  }
-
   try {
     const cred = await auth.signInWithEmailAndPassword(email, pass);
     const snap = await db.collection('users').doc(cred.user.uid).get();
@@ -1608,11 +1520,7 @@ window.doRegister = doRegister;
 function loginSuccess(email, user) {
   currentUser = { email, ...user };
   document.getElementById('authScreen').style.display = 'none';
-if (user.role === 'admin') {
-  document.getElementById('mainApp').style.display = 'none';
-  document.getElementById('adminPanel').style.display = 'block';
-  loadAdminData();
-} else {
+document.getElementById('mainApp').style.display = 'block'; else {
   document.getElementById('mainApp').style.display = 'block';
 }
   document.getElementById('navUsername').textContent = user.username || 'User';
