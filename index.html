@@ -1717,7 +1717,7 @@ async function initiateNowPayment() {
   nowpayShowStep(2);
   try {
     const orderId = currentUser.uid + '_' + Date.now();
-    const res = await fetch('https://earnova-payment.dineshsanther123gf.workers.dev/payment', {
+    const res = await fetch('https://earnova-payment2.dineshsanther123gf.workers.dev/payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1785,7 +1785,7 @@ function startNowpayPoll(paymentId) {
   clearInterval(nowpayPollInterval);
   nowpayPollInterval = setInterval(async () => {
     try {
-      const res = await fetch('https://earnova-payment.dineshsanther123gf.workers.dev/payment/' + paymentId);
+      const res = await fetch('https://earnova-payment2.dineshsanther123gf.workers.dev/payment/' + paymentId);
       const data = await res.json();
       const status = data.payment_status;
       if (status === 'confirming' || status === 'sending') {
