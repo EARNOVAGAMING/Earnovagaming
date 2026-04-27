@@ -2181,8 +2181,9 @@ function update() {
     sessionPts+=500; totalPts+=500;
     level++;
     showToast('🏆 Level ' + level + '! +500 bonus pts! Speeding up...');
-    ball.vx *= 1.08;
-    ball.vy *= 1.08;
+    const maxSpeed = 8;
+ball.vx = Math.sign(ball.vx) * Math.min(Math.abs(ball.vx) * 1.08, maxSpeed);
+ball.vy = Math.sign(ball.vy) * Math.min(Math.abs(ball.vy) * 1.08, maxSpeed);
     initBlocks();
   }
 }
